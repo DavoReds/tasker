@@ -1,10 +1,12 @@
 use serde::{Deserialize, Serialize};
+use std::collections::HashSet;
+use str_slug::slug;
 
 #[derive(Debug, Deserialize, Serialize, PartialEq, Eq, Clone)]
 pub struct Task {
     pub description: String,
     pub state: State,
-    pub tags: Vec<String>,
+    pub tags: HashSet<String>,
     pub project: String,
 }
 
@@ -32,7 +34,7 @@ impl Task {
 pub struct TaskBuilder {
     description: String,
     state: State,
-    tags: Option<Vec<String>>,
+    tags: Option<HashSet<String>>,
     project: Option<String>,
 }
 
@@ -49,16 +51,19 @@ impl TaskBuilder {
 
     pub fn tag(&mut self, tag: impl Into<String>) -> &mut Self {
         if self.tags.is_none() {
-            self.tags = Some(vec![tag.into()]);
+            let mut tags = HashSet::new();
+            tags.insert(slug(tag.into()));
+
+            self.tags = Some(tags);
         } else {
-            self.tags.as_mut().unwrap().push(tag.into());
+            self.tags.as_mut().unwrap().insert(slug(tag.into()));
         }
 
         self
     }
 
     pub fn tags(&mut self, tags: impl IntoIterator<Item = impl Into<String>>) -> &mut Self {
-        self.tags = Some(tags.into_iter().map(Into::into).collect());
+        self.tags = Some(tags.into_iter().map(|tag| slug(tag.into())).collect());
         self
     }
 
@@ -85,7 +90,7 @@ mod tests {
             Task {
                 description: "This is a test".to_string(),
                 state: State::ToDo,
-                tags: vec![],
+                tags: HashSet::new(),
                 project: "Inbox".to_string()
             }
         );
@@ -100,7 +105,7 @@ mod tests {
             Task {
                 description: "This is a test".to_string(),
                 state: State::Waiting,
-                tags: vec![],
+                tags: HashSet::new(),
                 project: "Inbox".to_string()
             }
         );
@@ -109,13 +114,15 @@ mod tests {
     #[test]
     fn task_builder_change_tag_works() {
         let task = Task::create("This is a test").tag("Test").build();
+        let mut hash_set = HashSet::new();
+        hash_set.insert("test".to_string());
 
         assert_eq!(
             task,
             Task {
                 description: "This is a test".to_string(),
                 state: State::ToDo,
-                tags: vec!["Test".into()],
+                tags: hash_set,
                 project: "Inbox".to_string()
             }
         );
@@ -127,12 +134,16 @@ mod tests {
             .tags(vec!["Test 1", "Test 2"])
             .build();
 
+        let mut hash_set = HashSet::new();
+        hash_set.insert("test-1".to_string());
+        hash_set.insert("test-2".to_string());
+
         assert_eq!(
             task,
             Task {
                 description: "This is a test".to_string(),
                 state: State::ToDo,
-                tags: vec!["Test 1".into(), "Test 2".into()],
+                tags: hash_set,
                 project: "Inbox".to_string()
             }
         );
@@ -147,7 +158,7 @@ mod tests {
             Task {
                 description: "This is a test".to_string(),
                 state: State::ToDo,
-                tags: vec![],
+                tags: HashSet::new(),
                 project: "Testing".to_string()
             }
         );

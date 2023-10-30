@@ -13,3 +13,4 @@ categories = ["command-line-utilities"]
 [dependencies]
 rayon = "1.8.0"
 serde = { version = "1.0.190", features = ["derive"] }
+str_slug = "0.1.3"
