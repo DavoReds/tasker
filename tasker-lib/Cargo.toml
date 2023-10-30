@@ -1,0 +1,15 @@
+[package]
+name = "tasker-lib"
+version = "0.1.0"
+edition = "2021"
+authors = ["Dalia Rojas Vallejo <daliarojasvallejo@proton.me>"]
+description = "Library for Tasker applications"
+readme = true
+repository = "https://github.com/DavoReds/tasker"
+license = "GPL-3.0-or-later"
+keywords = ["todo", "app", "cli"]
+categories = ["command-line-utilities"]
+
+[dependencies]
+rayon = "1.8.0"
+serde = { version = "1.0.190", features = ["derive"] }
