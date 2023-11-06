@@ -16,3 +16,4 @@ clap = { version = "4.4.7", features = ["derive"] }
 owo-colors = "3.5.0"
 rayon = "1.8.0"
 tasker-lib = { path = "../tasker-lib" }
+toml = "0.8.6"
