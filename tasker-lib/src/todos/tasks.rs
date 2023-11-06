@@ -41,6 +41,10 @@ impl Task {
     pub fn change_description(&mut self, description: impl Into<String>) {
         self.description = description.into();
     }
+
+    pub fn change_state(&mut self, state: State) {
+        self.state = state;
+    }
 }
 
 #[derive(Debug)]

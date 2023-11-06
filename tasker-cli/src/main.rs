@@ -1,5 +1,5 @@
+use anyhow::anyhow;
 use clap::Parser;
-use color_eyre::eyre::eyre;
 use owo_colors::OwoColorize;
 use rayon::prelude::*;
 use tasker_cli::cli::{Cli, Command};
@@ -8,9 +8,7 @@ use tasker_lib::{
     todos::Task,
 };
 
-fn main() -> color_eyre::Result<()> {
-    color_eyre::install()?;
-
+fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
 
     match cli.command {
@@ -33,7 +31,7 @@ fn main() -> color_eyre::Result<()> {
 
             match save_to_do(cli.todo_file.as_deref(), &to_do) {
                 Ok(_) => println!("{}", "Task saved".green()),
-                Err(err) => return Err(eyre!({ err })),
+                Err(err) => return Err(anyhow!(err)),
             }
         }
         Some(Command::AddMultiple(tasks)) => {
@@ -53,7 +51,22 @@ fn main() -> color_eyre::Result<()> {
 
             match save_to_do(cli.todo_file.as_deref(), &to_do) {
                 Ok(_) => println!("{}", "Tasks saved".green()),
-                Err(err) => return Err(eyre!({ err })),
+                Err(err) => return Err(anyhow!(err)),
+            }
+        }
+        Some(Command::Toggle(toggle)) => {
+            let mut to_do = get_to_do(cli.todo_file.as_deref())?;
+
+            to_do
+                .tasks
+                .par_iter_mut()
+                .enumerate()
+                .filter(|(idx, _)| toggle.tasks.contains(idx))
+                .for_each(|(_, task)| task.change_state(toggle.state.into()));
+
+            match save_to_do(cli.todo_file.as_deref(), &to_do) {
+                Ok(_) => println!("{}", "State changed".yellow()),
+                Err(err) => return Err(anyhow!(err)),
             }
         }
         None => println!("So you want to do nothing at all, huh?"),
