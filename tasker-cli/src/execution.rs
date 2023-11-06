@@ -6,12 +6,17 @@ use tasker_lib::{
     todos::Task,
 };
 
-use crate::cli::{Cli, Command};
+use crate::{
+    cli::{Cli, Command},
+    config::get_config,
+};
 
 pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
+    let configuration = get_config(cli.config_file.as_deref(), cli.to_do_file.as_deref())?;
+
     match cli.command {
         Some(Command::Add(task)) => {
-            let mut to_do = get_to_do(cli.todo_file.as_deref())?;
+            let mut to_do = get_to_do(Some(&configuration.to_do_path))?;
 
             match task.project {
                 Some(pro) => to_do.add_task(
@@ -27,13 +32,13 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
                 ),
             }
 
-            match save_to_do(cli.todo_file.as_deref(), &to_do) {
+            match save_to_do(Some(&configuration.to_do_path), &to_do) {
                 Ok(_) => println!("{}", "Task saved".green()),
                 Err(err) => return Err(anyhow!(err)),
             }
         }
         Some(Command::AddMultiple(tasks)) => {
-            let mut to_do = get_to_do(cli.todo_file.as_deref())?;
+            let mut to_do = get_to_do(cli.to_do_file.as_deref())?;
 
             to_do
                 .tasks
@@ -47,13 +52,13 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
                         }),
                 );
 
-            match save_to_do(cli.todo_file.as_deref(), &to_do) {
+            match save_to_do(cli.to_do_file.as_deref(), &to_do) {
                 Ok(_) => println!("{}", "Tasks saved".green()),
                 Err(err) => return Err(anyhow!(err)),
             }
         }
         Some(Command::Toggle(toggle)) => {
-            let mut to_do = get_to_do(cli.todo_file.as_deref())?;
+            let mut to_do = get_to_do(cli.to_do_file.as_deref())?;
 
             to_do
                 .tasks
@@ -62,7 +67,7 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
                 .filter(|(idx, _)| toggle.tasks.contains(idx))
                 .for_each(|(_, task)| task.change_state(toggle.state.into()));
 
-            match save_to_do(cli.todo_file.as_deref(), &to_do) {
+            match save_to_do(cli.to_do_file.as_deref(), &to_do) {
                 Ok(_) => println!("{}", "State changed".yellow()),
                 Err(err) => return Err(anyhow!(err)),
             }

@@ -7,8 +7,8 @@ use directories::ProjectDirs;
 
 use crate::{error::TaskerError, todos::ToDo};
 
-fn get_project_directories() -> Result<ProjectDirs, TaskerError> {
-    let project_directories = ProjectDirs::from("dev", "DaliaReds", "tasker-cli").ok_or(
+pub fn get_project_directories() -> Result<ProjectDirs, TaskerError> {
+    let project_directories = ProjectDirs::from("dev", "DaliaReds", "tasker").ok_or(
         TaskerError::ProjectDirectoryError(std::io::Error::new(
             std::io::ErrorKind::Unsupported,
             "System not supported",
@@ -26,7 +26,7 @@ fn get_project_directories() -> Result<ProjectDirs, TaskerError> {
     Ok(project_directories)
 }
 
-fn get_to_do_path(path: Option<&Path>) -> Result<PathBuf, TaskerError> {
+pub fn get_to_do_path(path: Option<&Path>) -> Result<PathBuf, TaskerError> {
     match path {
         Some(p) => Ok(p.to_owned()),
         None => {

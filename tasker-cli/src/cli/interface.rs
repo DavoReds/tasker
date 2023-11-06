@@ -24,10 +24,10 @@ pub struct Cli {
     pub command: Option<Command>,
 
     /// Path to a file in which to look for and save To-Do's
-    #[arg(long)]
-    pub todo_file: Option<PathBuf>,
+    #[arg(long = "todo-file")]
+    pub to_do_file: Option<PathBuf>,
 
-    /// Path to an alternative configuration file
+    /// Path to an alternative configuration file. Takes precedence over `todo-file`
     #[arg(long)]
     pub config_file: Option<PathBuf>,
 }
