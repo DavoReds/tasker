@@ -26,21 +26,14 @@ pub fn get_project_directories() -> Result<ProjectDirs, TaskerError> {
     Ok(project_directories)
 }
 
-pub fn get_to_do_path(path: Option<&Path>) -> Result<PathBuf, TaskerError> {
-    match path {
-        Some(p) => Ok(p.to_owned()),
-        None => {
-            let dirs = get_project_directories()?;
-            Ok(dirs.data_dir().join("todo.ron"))
-        }
-    }
+pub fn get_to_do_path() -> Result<PathBuf, TaskerError> {
+    let dirs = get_project_directories()?;
+    Ok(dirs.data_dir().join("todo.ron"))
 }
 
-pub fn get_to_do(path: Option<&Path>) -> Result<ToDo, TaskerError> {
-    let to_do_path = get_to_do_path(path)?;
-
-    let to_do = if to_do_path.exists() {
-        ron::from_str(std::fs::read_to_string(to_do_path)?.as_str())?
+pub fn get_to_do(path: &Path) -> Result<ToDo, TaskerError> {
+    let to_do = if path.exists() {
+        ron::from_str(std::fs::read_to_string(path)?.as_str())?
     } else {
         ToDo::default()
     };
@@ -48,10 +41,8 @@ pub fn get_to_do(path: Option<&Path>) -> Result<ToDo, TaskerError> {
     Ok(to_do)
 }
 
-pub fn save_to_do(path: Option<&Path>, todo: &ToDo) -> Result<(), TaskerError> {
-    let to_do_path = get_to_do_path(path)?;
-
-    let mut to_do_file = std::fs::File::create(to_do_path)?;
+pub fn save_to_do(path: &Path, todo: &ToDo) -> Result<(), TaskerError> {
+    let mut to_do_file = std::fs::File::create(path)?;
 
     to_do_file.write_all(ron::to_string(todo)?.as_bytes())?;
 
