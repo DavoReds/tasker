@@ -1,4 +1,7 @@
-use std::{io::Write, path::PathBuf};
+use std::{
+    io::Write,
+    path::{Path, PathBuf},
+};
 
 use directories::ProjectDirs;
 
@@ -23,9 +26,9 @@ fn get_project_directories() -> Result<ProjectDirs, TaskerError> {
     Ok(project_directories)
 }
 
-fn get_to_do_path(path: Option<PathBuf>) -> Result<PathBuf, TaskerError> {
+fn get_to_do_path(path: Option<&Path>) -> Result<PathBuf, TaskerError> {
     match path {
-        Some(p) => Ok(p),
+        Some(p) => Ok(p.to_owned()),
         None => {
             let dirs = get_project_directories()?;
             Ok(dirs.data_dir().join("todo.ron"))
@@ -33,7 +36,7 @@ fn get_to_do_path(path: Option<PathBuf>) -> Result<PathBuf, TaskerError> {
     }
 }
 
-pub fn get_to_do(path: Option<PathBuf>) -> Result<ToDo, TaskerError> {
+pub fn get_to_do(path: Option<&Path>) -> Result<ToDo, TaskerError> {
     let to_do_path = get_to_do_path(path)?;
 
     let to_do = if to_do_path.exists() {
@@ -45,7 +48,7 @@ pub fn get_to_do(path: Option<PathBuf>) -> Result<ToDo, TaskerError> {
     Ok(to_do)
 }
 
-pub fn save_to_do(path: Option<PathBuf>, todo: &ToDo) -> Result<(), TaskerError> {
+pub fn save_to_do(path: Option<&Path>, todo: &ToDo) -> Result<(), TaskerError> {
     let to_do_path = get_to_do_path(path)?;
 
     let mut to_do_file = std::fs::File::create(to_do_path)?;

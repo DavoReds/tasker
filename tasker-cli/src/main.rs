@@ -15,29 +15,29 @@ fn main() -> color_eyre::Result<()> {
 
     match cli.command {
         Some(Command::Add(task)) => {
-            let mut to_do = get_to_do(cli.todo_file.clone())?;
+            let mut to_do = get_to_do(cli.todo_file.as_deref())?;
 
             match task.project {
-                Some(pro) => to_do.tasks.push(
+                Some(pro) => to_do.add_task(
                     Task::create(task.description)
                         .project(pro)
                         .tags(task.tags.unwrap_or_default())
                         .build(),
                 ),
-                None => to_do.tasks.push(
+                None => to_do.add_task(
                     Task::create(task.description)
                         .tags(task.tags.unwrap_or_default())
                         .build(),
                 ),
             }
 
-            match save_to_do(cli.todo_file, &to_do) {
+            match save_to_do(cli.todo_file.as_deref(), &to_do) {
                 Ok(_) => println!("{}", "Task saved".green()),
                 Err(err) => return Err(eyre!({ err })),
             }
         }
         Some(Command::AddMultiple(tasks)) => {
-            let mut to_do = get_to_do(cli.todo_file.clone())?;
+            let mut to_do = get_to_do(cli.todo_file.as_deref())?;
 
             to_do
                 .tasks
@@ -51,7 +51,7 @@ fn main() -> color_eyre::Result<()> {
                         }),
                 );
 
-            match save_to_do(cli.todo_file, &to_do) {
+            match save_to_do(cli.todo_file.as_deref(), &to_do) {
                 Ok(_) => println!("{}", "Tasks saved".green()),
                 Err(err) => return Err(eyre!({ err })),
             }
