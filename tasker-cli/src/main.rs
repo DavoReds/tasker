@@ -2,11 +2,11 @@ use clap::Parser;
 use color_eyre::eyre::eyre;
 use owo_colors::OwoColorize;
 use rayon::prelude::*;
-use tasker_cli::cli::{
-    execution::{extract_to_do, save_to_do},
-    Cli, Command,
+use tasker_cli::cli::{Cli, Command};
+use tasker_lib::{
+    io::{get_to_do, save_to_do},
+    todos::Task,
 };
-use tasker_lib::todos::Task;
 
 fn main() -> color_eyre::Result<()> {
     color_eyre::install()?;
@@ -15,17 +15,17 @@ fn main() -> color_eyre::Result<()> {
 
     match cli.command {
         Some(Command::Add(task)) => {
-            let mut to_do = extract_to_do(cli.todo_file.clone())?;
+            let mut to_do = get_to_do(cli.todo_file.clone())?;
 
             match task.project {
                 Some(pro) => to_do.tasks.push(
-                    Task::create(task.description.as_str())
+                    Task::create(task.description)
                         .project(pro)
                         .tags(task.tags.unwrap_or_default())
                         .build(),
                 ),
                 None => to_do.tasks.push(
-                    Task::create(task.description.as_str())
+                    Task::create(task.description)
                         .tags(task.tags.unwrap_or_default())
                         .build(),
                 ),
@@ -37,7 +37,7 @@ fn main() -> color_eyre::Result<()> {
             }
         }
         Some(Command::AddMultiple(tasks)) => {
-            let mut to_do = extract_to_do(cli.todo_file.clone())?;
+            let mut to_do = get_to_do(cli.todo_file.clone())?;
 
             to_do
                 .tasks
@@ -46,8 +46,8 @@ fn main() -> color_eyre::Result<()> {
                         .descriptions
                         .into_par_iter()
                         .map(|t| match &tasks.project {
-                            Some(pro) => Task::create(t.as_str()).project(pro).build(),
-                            None => Task::create(t.as_str()).build(),
+                            Some(pro) => Task::create(t).project(pro).build(),
+                            None => Task::create(t).build(),
                         }),
                 );
 

@@ -20,13 +20,26 @@ pub enum State {
 }
 
 impl Task {
-    pub fn create(description: &str) -> TaskBuilder {
+    pub fn create(description: impl Into<String>) -> TaskBuilder {
         TaskBuilder {
-            description: description.to_string(),
+            description: description.into(),
             state: State::default(),
             tags: None,
             project: None,
         }
+    }
+
+    pub fn add_tag(&mut self, tag: impl Into<String>) {
+        self.tags.insert(slug(tag.into()));
+    }
+
+    pub fn add_tags(&mut self, tags: impl IntoIterator<Item = impl Into<String>>) {
+        self.tags
+            .extend(tags.into_iter().map(|tag| slug(tag.into())));
+    }
+
+    pub fn change_description(&mut self, description: impl Into<String>) {
+        self.description = description.into();
     }
 }
 
@@ -159,6 +172,42 @@ mod tests {
                 description: "This is a test".to_string(),
                 state: State::ToDo,
                 tags: HashSet::new(),
+                project: "Testing".to_string()
+            }
+        );
+    }
+
+    #[test]
+    fn add_tag_works() {
+        let mut task = Task::create("This is a test").project("Testing").build();
+        task.add_tag("Testing tags");
+
+        assert_eq!(
+            task,
+            Task {
+                description: "This is a test".to_string(),
+                state: State::ToDo,
+                tags: HashSet::from(["testing-tags".to_string()]),
+                project: "Testing".to_string()
+            }
+        );
+    }
+
+    #[test]
+    fn add_tags_works() {
+        let mut task = Task::create("This is a test").project("Testing").build();
+        task.add_tags(["Testing tags", "another tag", "Yet Another Tag"]);
+
+        assert_eq!(
+            task,
+            Task {
+                description: "This is a test".to_string(),
+                state: State::ToDo,
+                tags: HashSet::from([
+                    "testing-tags".to_string(),
+                    "another-tag".to_string(),
+                    "yet-another-tag".to_string()
+                ]),
                 project: "Testing".to_string()
             }
         );
