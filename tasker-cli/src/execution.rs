@@ -1,6 +1,5 @@
 use anyhow::anyhow;
 use owo_colors::OwoColorize;
-use rayon::prelude::*;
 use tasker_lib::{
     io::{get_to_do, get_to_do_path, save_to_do},
     todos::Task,
@@ -50,17 +49,24 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
         Some(Command::AddMultiple(tasks)) => {
             let mut to_do = get_to_do(&configuration.to_do_path)?;
 
-            to_do
-                .tasks
-                .par_extend(
-                    tasks
-                        .descriptions
-                        .into_par_iter()
-                        .map(|t| match &tasks.project {
-                            Some(pro) => Task::create(t).project(pro).build(),
-                            None => Task::create(t).build(),
-                        }),
-                );
+            match tasks.project {
+                Some(pro) => {
+                    to_do.tasks.extend(
+                        tasks
+                            .descriptions
+                            .into_iter()
+                            .map(|desc| Task::create(desc).project(pro.clone()).build()),
+                    );
+                }
+                None => {
+                    to_do.tasks.extend(
+                        tasks
+                            .descriptions
+                            .into_iter()
+                            .map(|desc| Task::create(desc).build()),
+                    );
+                }
+            }
 
             match save_to_do(&configuration.to_do_path, &to_do) {
                 Ok(_) => println!("{}", "Tasks saved".green()),
@@ -72,13 +78,29 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
 
             to_do
                 .tasks
-                .par_iter_mut()
+                .iter_mut()
                 .enumerate()
                 .filter(|(idx, _)| toggle.tasks.contains(idx))
                 .for_each(|(_, task)| task.change_state(toggle.state.into()));
 
             match save_to_do(&configuration.to_do_path, &to_do) {
                 Ok(_) => println!("{}", "State changed".yellow()),
+                Err(err) => return Err(anyhow!(err)),
+            }
+        }
+        Some(Command::Delete(tasks)) => {
+            let mut to_do = get_to_do(&configuration.to_do_path)?;
+
+            let mut idx: usize = 0;
+
+            to_do.tasks.retain(|_| {
+                let contains = tasks.tasks.contains(&idx);
+                idx += 1;
+                !contains
+            });
+
+            match save_to_do(&configuration.to_do_path, &to_do) {
+                Ok(_) => println!("Tasks deleted"),
                 Err(err) => return Err(anyhow!(err)),
             }
         }

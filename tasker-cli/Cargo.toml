@@ -14,7 +14,6 @@ categories = ["command-line-utilities"]
 anyhow = "1.0.75"
 clap = { version = "4.4.7", features = ["derive"] }
 owo-colors = "3.5.0"
-rayon = "1.8.0"
-serde = { version = "1.0.191", features = ["derive"] }
+serde = { version = "1.0.192", features = ["derive"] }
 tasker-lib = { path = "../tasker-lib" }
-toml = "0.8.6"
+toml = "0.8.8"

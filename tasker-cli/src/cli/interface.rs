@@ -43,16 +43,20 @@ pub struct Cli {
 ))]
 pub enum Command {
     /// Add one To-Do
-    #[command(arg_required_else_help = true)]
+    #[command(arg_required_else_help = true, visible_alias = "a")]
     Add(AddToDo),
 
     /// Add multiple To-Do's
-    #[command(arg_required_else_help = true, name = "addm")]
+    #[command(arg_required_else_help = true, name = "addm", visible_alias = "am")]
     AddMultiple(AddMultipleToDo),
 
     /// Change the state of a To-Do
-    #[command(arg_required_else_help = true)]
+    #[command(arg_required_else_help = true, visible_alias = "t")]
     Toggle(ToggleToDo),
+
+    /// Delete To-Do's
+    #[command(arg_required_else_help = true, visible_alias = "d")]
+    Delete(DeleteToDo),
 }
 
 #[derive(Args, Debug)]
@@ -139,4 +143,18 @@ impl From<ToggleState> for State {
             ToggleState::Waiting => Self::Waiting,
         }
     }
+}
+
+#[derive(Args, Debug)]
+#[command(help_template(
+    "\
+{name}
+{about-with-newline}
+{usage-heading} {usage}
+
+{all-args}"
+))]
+pub struct DeleteToDo {
+    /// Id's of task(s) to delete
+    pub tasks: Vec<usize>,
 }
