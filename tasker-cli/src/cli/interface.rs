@@ -165,6 +165,21 @@ pub struct EditToDo {
     /// ID of the To-Do to edit
     #[arg(name = "TO-DO")]
     pub task: usize,
+
+    /// New description for the To-Do
+    #[arg(short, long)]
+    pub description: Option<String>,
+
+    /// New state for the To-Do
+    #[arg(short, long, value_enum)]
+    pub state: Option<ToggleState>,
+
+    /// New project for the To-Do
+    #[arg(short, long)]
+    pub project: Option<String>,
+
+    /// New tags for the To-Do
+    pub tags: Option<Vec<String>>,
 }
 
 #[derive(Args, Debug)]

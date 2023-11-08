@@ -38,6 +38,10 @@ impl Task {
             .extend(tags.into_iter().map(|tag| slug(tag.into())));
     }
 
+    pub fn replace_tags(&mut self, tags: impl IntoIterator<Item = impl Into<String>>) {
+        self.tags = tags.into_iter().map(|tag| slug(tag.into())).collect()
+    }
+
     pub fn change_description(&mut self, description: impl Into<String>) {
         self.description = description.into();
     }

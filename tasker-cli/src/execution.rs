@@ -1,4 +1,4 @@
-use anyhow::anyhow;
+use anyhow::{anyhow, Context};
 use owo_colors::OwoColorize;
 use tasker_lib::{
     io::{get_to_do, get_to_do_path, save_to_do},
@@ -42,8 +42,8 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
             }
 
             match save_to_do(&configuration.to_do_path, &to_do) {
-                Ok(_) => println!("{}", "Task saved".green()),
-                Err(err) => return Err(anyhow!(err)),
+                Ok(_) => println!("{}", "Task added".green()),
+                Err(err) => return Err(anyhow!("Failed to save To-Do file: {}", err.red())),
             }
         }
         Some(Command::AddMultiple(tasks)) => {
@@ -69,8 +69,8 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
             }
 
             match save_to_do(&configuration.to_do_path, &to_do) {
-                Ok(_) => println!("{}", "Tasks saved".green()),
-                Err(err) => return Err(anyhow!(err)),
+                Ok(_) => println!("{}", "Tasks added".green()),
+                Err(err) => return Err(anyhow!("Failed to save To-Do file: {}", err.red())),
             }
         }
         Some(Command::Toggle(toggle)) => {
@@ -85,11 +85,37 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
 
             match save_to_do(&configuration.to_do_path, &to_do) {
                 Ok(_) => println!("{}", "State changed".yellow()),
-                Err(err) => return Err(anyhow!(err)),
+                Err(err) => return Err(anyhow!("Failed to save To-Do file: {}", err.red())),
             }
         }
         Some(Command::Edit(task)) => {
-            println!("{task:?}");
+            let mut to_do = get_to_do(&configuration.to_do_path)?;
+
+            let task_to_edit = to_do
+                .tasks
+                .get_mut(task.task)
+                .context("Task doesn't exist")?;
+
+            if task.description.is_some() {
+                task_to_edit.description = task.description.unwrap();
+            }
+
+            if task.project.is_some() {
+                task_to_edit.project = task.project.unwrap();
+            }
+
+            if task.state.is_some() {
+                task_to_edit.state = task.state.unwrap().into();
+            }
+
+            if task.tags.is_some() {
+                task_to_edit.replace_tags(task.tags.unwrap());
+            }
+
+            match save_to_do(&configuration.to_do_path, &to_do) {
+                Ok(_) => println!("{}", "To-Do edited".blue()),
+                Err(err) => return Err(anyhow!("Failed to save To-Do file: {}", err.red())),
+            }
         }
         Some(Command::Delete(tasks)) => {
             let mut to_do = get_to_do(&configuration.to_do_path)?;
@@ -103,8 +129,8 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
             });
 
             match save_to_do(&configuration.to_do_path, &to_do) {
-                Ok(_) => println!("Tasks deleted"),
-                Err(err) => return Err(anyhow!(err)),
+                Ok(_) => println!("{}", "Tasks deleted".red()),
+                Err(err) => return Err(anyhow!("Failed to save To-Do file: {}", err.red())),
             }
         }
         None => println!("So you want to do nothing at all, huh?"),
