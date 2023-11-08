@@ -88,6 +88,9 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
                 Err(err) => return Err(anyhow!(err)),
             }
         }
+        Some(Command::Edit(task)) => {
+            println!("{task:?}");
+        }
         Some(Command::Delete(tasks)) => {
             let mut to_do = get_to_do(&configuration.to_do_path)?;
 

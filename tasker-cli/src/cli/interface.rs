@@ -54,6 +54,10 @@ pub enum Command {
     #[command(arg_required_else_help = true, visible_alias = "t")]
     Toggle(ToggleToDo),
 
+    /// Edit a To-Do
+    #[command(arg_required_else_help = true, visible_alias = "e")]
+    Edit(EditToDo),
+
     /// Delete To-Do's
     #[command(arg_required_else_help = true, visible_alias = "d")]
     Delete(DeleteToDo),
@@ -90,8 +94,8 @@ pub struct AddToDo {
 {all-args}"
 ))]
 pub struct AddMultipleToDo {
-    /// Tasks to accomplish, wrap individual tasks in quotes for multi-word
-    /// tasks.
+    /// Tasks to accomplish, wrap individual To-Dos in quotes for multi-word
+    /// To-Dos.
     pub descriptions: Vec<String>,
 
     /// Project the To-Do's belongs to. Defaults to "Inbox"
@@ -109,28 +113,31 @@ pub struct AddMultipleToDo {
 {all-args}"
 ))]
 pub struct ToggleToDo {
-    /// State to assign the task
+    /// State to assign the To-Do
     #[arg(value_enum)]
     pub state: ToggleState,
 
-    /// ID's of the task(s) to toggle
+    /// ID(s) of the To-Do(s) to toggle
+    #[arg(name = "TO-DOS")]
     pub tasks: Vec<usize>,
 }
 
 #[derive(Debug, ValueEnum, Clone, Copy)]
 pub enum ToggleState {
-    /// This task hasn't started
-    #[value(name = "todo")]
+    /// This To-Do hasn't started
+    #[value(name = "todo", alias = "t")]
     ToDo,
 
-    /// This task is in progress
+    /// This To-Do is in progress
+    #[value(alias = "dg")]
     Doing,
 
-    /// This task is finished
+    /// This To-Do is finished
+    #[value(alias = "dn")]
     Done,
 
-    /// This task can't be accomplished due to external reasons
-    #[value(name = "wait")]
+    /// This To-Do can't be accomplished due to external reasons
+    #[value(name = "wait", alias = "w")]
     Waiting,
 }
 
@@ -154,7 +161,23 @@ impl From<ToggleState> for State {
 
 {all-args}"
 ))]
+pub struct EditToDo {
+    /// ID of the To-Do to edit
+    #[arg(name = "TO-DO")]
+    pub task: usize,
+}
+
+#[derive(Args, Debug)]
+#[command(help_template(
+    "\
+{name}
+{about-with-newline}
+{usage-heading} {usage}
+
+{all-args}"
+))]
 pub struct DeleteToDo {
-    /// Id's of task(s) to delete
+    /// Id's of To-Do(s) to delete
+    #[arg(name = "TO-DOS")]
     pub tasks: Vec<usize>,
 }
