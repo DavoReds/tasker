@@ -5,6 +5,9 @@ pub enum TaskerError {
     #[error("failed to determine project directories")]
     ProjectDirectoryError(#[from] std::io::Error),
 
+    #[error("file path is invalid UTF-8")]
+    InvalidUtf8Error(#[from] camino::FromPathBufError),
+
     #[error("failed to deserialize file: `{0}`")]
     DeserializationError(#[from] ron::error::SpannedError),
 

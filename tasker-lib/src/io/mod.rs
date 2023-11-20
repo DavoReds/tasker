@@ -1,11 +1,7 @@
-use std::{
-    io::Write,
-    path::{Path, PathBuf},
-};
-
-use directories::ProjectDirs;
-
 use crate::{error::TaskerError, todos::ToDo};
+use camino::{Utf8Path, Utf8PathBuf};
+use directories::ProjectDirs;
+use std::io::Write;
 
 pub fn get_project_directories() -> Result<ProjectDirs, TaskerError> {
     let project_directories = ProjectDirs::from("dev", "DaliaReds", "tasker").ok_or(
@@ -26,25 +22,34 @@ pub fn get_project_directories() -> Result<ProjectDirs, TaskerError> {
     Ok(project_directories)
 }
 
-pub fn get_to_do_path() -> Result<PathBuf, TaskerError> {
-    let dirs = get_project_directories()?;
-    Ok(dirs.data_dir().join("todo.ron"))
-}
+impl ToDo {
+    pub fn get_to_do(file_path: &Utf8Path) -> Result<Self, TaskerError> {
+        match file_path.try_exists() {
+            Ok(exists) => {
+                if exists {
+                    Ok(ron::from_str(std::fs::read_to_string(file_path)?.as_str())?)
+                } else {
+                    Ok(Self::default())
+                }
+            }
+            Err(err) => Err(TaskerError::ProjectDirectoryError(err)),
+        }
+    }
 
-pub fn get_to_do(path: &Path) -> Result<ToDo, TaskerError> {
-    let to_do = if path.exists() {
-        ron::from_str(std::fs::read_to_string(path)?.as_str())?
-    } else {
-        ToDo::default()
-    };
+    pub fn get_default_to_do_path() -> Result<Utf8PathBuf, TaskerError> {
+        let dirs = get_project_directories()?;
 
-    Ok(to_do)
-}
+        let mut config_dir = Utf8PathBuf::try_from(dirs.data_dir().to_path_buf())?;
+        config_dir.push("todo.ron");
 
-pub fn save_to_do(path: &Path, todo: &ToDo) -> Result<(), TaskerError> {
-    let mut to_do_file = std::fs::File::create(path)?;
+        Ok(config_dir)
+    }
 
-    to_do_file.write_all(ron::to_string(todo)?.as_bytes())?;
+    pub fn save(&self, path: &Utf8Path) -> Result<(), TaskerError> {
+        let mut to_do_file = std::fs::File::create(path)?;
 
-    Ok(())
+        to_do_file.write_all(ron::to_string(self)?.as_bytes())?;
+
+        Ok(())
+    }
 }

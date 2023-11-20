@@ -1,5 +1,4 @@
-use std::path::PathBuf;
-
+use camino::Utf8PathBuf;
 use clap::{Args, Parser, Subcommand, ValueEnum};
 use tasker_lib::todos::State;
 
@@ -25,11 +24,11 @@ pub struct Cli {
 
     /// Path to a file in which to look for and save To-Do's
     #[arg(long = "todo-file")]
-    pub to_do_file: Option<PathBuf>,
+    pub to_do_file: Option<Utf8PathBuf>,
 
     /// Path to an alternative configuration file. Takes precedence over `todo-file`
     #[arg(long)]
-    pub config_file: Option<PathBuf>,
+    pub config_file: Option<Utf8PathBuf>,
 }
 
 #[derive(Debug, Subcommand)]
