@@ -64,6 +64,11 @@ pub enum Command {
     /// Clean completed To-Do's
     #[command(visible_alias = "c")]
     Clean,
+    // TODO: Create list command interface
+
+    // /// List To-Do's
+    // #[command(visible_alias = "l")]
+    // List(ListToDo),
 }
 
 #[derive(Args, Debug)]
@@ -199,3 +204,36 @@ pub struct DeleteToDo {
     #[arg(name = "TO-DOS")]
     pub tasks: Vec<usize>,
 }
+
+// #[derive(Args, Debug)]
+// #[command(help_template(
+//     "\
+// {name}
+// {about-with-newline}
+// {usage-heading} {usage}
+//
+// {all-args}"
+// ))]
+// pub struct ListToDo {
+//     /// Field to sort the To-Do's by alphabetically
+//     #[arg(value_enum)]
+//     pub sort_by: Option<SortToDo>,
+//
+//     /// Rules to filter the To-Do's by.
+//     #[arg(value_enum)]
+//     pub filter_by: Option<FilterToDo>,
+// }
+//
+// #[derive(Debug, ValueEnum, Clone, Copy)]
+// pub enum SortToDo {
+//     Description,
+//     Project,
+//     State,
+// }
+//
+// #[derive(Debug, ValueEnum, Clone, Copy)]
+// pub enum FilterToDo {
+//     Description,
+//     Project,
+//     State,
+// }
