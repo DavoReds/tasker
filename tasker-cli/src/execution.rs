@@ -1,6 +1,6 @@
 use crate::{
     cli::{Cli, Command},
-    config::Configuration,
+    config::{Configuration, Language},
 };
 use anyhow::{anyhow, Context};
 use owo_colors::OwoColorize;
@@ -38,8 +38,21 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
             }
 
             match to_do.save(&configuration.to_do_path) {
-                Ok(_) => println!("{}", "Task added".green()),
-                Err(err) => return Err(anyhow!("Failed to save To-Do file: {}", err.red())),
+                Ok(_) => match configuration.language {
+                    Language::English => println!("{}", "Task added".green()),
+                    Language::Spanish => println!("{}", "Tarea añadida".green()),
+                },
+                Err(err) => match configuration.language {
+                    Language::English => {
+                        return Err(anyhow!("Failed to save To-Do file: {}", err.red()))
+                    }
+                    Language::Spanish => {
+                        return Err(anyhow!(
+                            "No se pudo guardar el archivo de tareas: {}",
+                            err.red()
+                        ))
+                    }
+                },
             }
         }
         Some(Command::AddMultiple(tasks)) => {
@@ -65,8 +78,21 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
             }
 
             match to_do.save(&configuration.to_do_path) {
-                Ok(_) => println!("{}", "Tasks added".green()),
-                Err(err) => return Err(anyhow!("Failed to save To-Do file: {}", err.red())),
+                Ok(_) => match configuration.language {
+                    Language::English => println!("{}", "Tasks added".green()),
+                    Language::Spanish => println!("{}", "Tareas añadidas".green()),
+                },
+                Err(err) => match configuration.language {
+                    Language::English => {
+                        return Err(anyhow!("Failed to save To-Do file: {}", err.red()))
+                    }
+                    Language::Spanish => {
+                        return Err(anyhow!(
+                            "No se pudo guardar archivo de tareas: {}",
+                            err.red()
+                        ))
+                    }
+                },
             }
         }
         Some(Command::Toggle(toggle)) => {
@@ -80,8 +106,21 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
                 .for_each(|(_, task)| task.change_state(toggle.state.into()));
 
             match to_do.save(&configuration.to_do_path) {
-                Ok(_) => println!("{}", "State changed".yellow()),
-                Err(err) => return Err(anyhow!("Failed to save To-Do file: {}", err.red())),
+                Ok(_) => match configuration.language {
+                    Language::English => println!("{}", "State changed".yellow()),
+                    Language::Spanish => println!("{}", "Estado cambiado".yellow()),
+                },
+                Err(err) => match configuration.language {
+                    Language::English => {
+                        return Err(anyhow!("Failed to save To-Do file: {}", err.red()))
+                    }
+                    Language::Spanish => {
+                        return Err(anyhow!(
+                            "No se pudo guardar archivo de tareas: {}",
+                            err.red()
+                        ))
+                    }
+                },
             }
         }
         Some(Command::Edit(task)) => {
@@ -109,8 +148,21 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
             }
 
             match to_do.save(&configuration.to_do_path) {
-                Ok(_) => println!("{}", "To-Do edited".blue()),
-                Err(err) => return Err(anyhow!("Failed to save To-Do file: {}", err.red())),
+                Ok(_) => match configuration.language {
+                    Language::English => println!("{}", "To-Do edited".blue()),
+                    Language::Spanish => println!("{}", "To-Do editado".blue()),
+                },
+                Err(err) => match configuration.language {
+                    Language::English => {
+                        return Err(anyhow!("Failed to save To-Do file: {}", err.red()))
+                    }
+                    Language::Spanish => {
+                        return Err(anyhow!(
+                            "No se pudo guardar archivo de tareas: {}",
+                            err.red()
+                        ))
+                    }
+                },
             }
         }
         Some(Command::Delete(tasks)) => {
@@ -125,8 +177,21 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
             });
 
             match to_do.save(&configuration.to_do_path) {
-                Ok(_) => println!("{}", "Tasks deleted".red()),
-                Err(err) => return Err(anyhow!("Failed to save To-Do file: {}", err.red())),
+                Ok(_) => match configuration.language {
+                    Language::English => println!("{}", "Tasks deleted".red()),
+                    Language::Spanish => println!("{}", "Tareas eliminadas".red()),
+                },
+                Err(err) => match configuration.language {
+                    Language::English => {
+                        return Err(anyhow!("Failed to save To-Do file: {}", err.red()))
+                    }
+                    Language::Spanish => {
+                        return Err(anyhow!(
+                            "No se pudo guardar archivo de tareas: {}",
+                            err.red()
+                        ))
+                    }
+                },
             }
         }
         Some(Command::Clean) => {
@@ -135,8 +200,23 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
             to_do.tasks.retain(|task| task.state != State::Done);
 
             match to_do.save(&configuration.to_do_path) {
-                Ok(_) => println!("{}", "Cleaned completed tasks!".blue()),
-                Err(err) => return Err(anyhow!("Failed to save To-Do file: {}", err.red())),
+                Ok(_) => match configuration.language {
+                    Language::English => println!("{}", "Cleaned completed tasks".purple()),
+                    Language::Spanish => {
+                        println!("{}", "Se limpiaron las tareas completadas".purple())
+                    }
+                },
+                Err(err) => match configuration.language {
+                    Language::English => {
+                        return Err(anyhow!("Failed to save To-Do file: {}", err.red()))
+                    }
+                    Language::Spanish => {
+                        return Err(anyhow!(
+                            "No se pudo guardar archivo de tareas: {}",
+                            err.red()
+                        ))
+                    }
+                },
             }
         }
         None => println!("So you want to do nothing at all, huh?"),
