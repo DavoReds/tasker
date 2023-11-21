@@ -4,6 +4,7 @@ use str_slug::slug;
 
 #[derive(Debug, Deserialize, Serialize, PartialEq, Eq, Clone)]
 pub struct Task {
+    pub id: usize,
     pub description: String,
     pub state: State,
     pub tags: HashSet<String>,
@@ -22,6 +23,7 @@ pub enum State {
 impl Task {
     pub fn create(description: impl Into<String>) -> TaskBuilder {
         TaskBuilder {
+            id: 0,
             description: description.into(),
             state: State::default(),
             tags: None,
@@ -53,6 +55,7 @@ impl Task {
 
 #[derive(Debug)]
 pub struct TaskBuilder {
+    id: usize,
     description: String,
     state: State,
     tags: Option<HashSet<String>>,
@@ -60,6 +63,11 @@ pub struct TaskBuilder {
 }
 
 impl TaskBuilder {
+    pub fn id(&mut self, id: usize) -> &mut Self {
+        self.id = id;
+        self
+    }
+
     pub fn state(&mut self, state: State) -> &mut Self {
         self.state = state;
         self
@@ -90,6 +98,7 @@ impl TaskBuilder {
 
     pub fn build(&self) -> Task {
         Task {
+            id: self.id,
             description: self.description.clone(),
             state: self.state.clone(),
             tags: self.tags.clone().unwrap_or_default(),
@@ -109,6 +118,7 @@ mod tests {
         assert_eq!(
             task,
             Task {
+                id: 0,
                 description: "This is a test".to_string(),
                 state: State::ToDo,
                 tags: HashSet::new(),
@@ -124,6 +134,7 @@ mod tests {
         assert_eq!(
             task,
             Task {
+                id: 0,
                 description: "This is a test".to_string(),
                 state: State::Waiting,
                 tags: HashSet::new(),
@@ -141,6 +152,7 @@ mod tests {
         assert_eq!(
             task,
             Task {
+                id: 0,
                 description: "This is a test".to_string(),
                 state: State::ToDo,
                 tags: hash_set,
@@ -152,7 +164,7 @@ mod tests {
     #[test]
     fn task_builder_change_tags_works() {
         let task = Task::create("This is a test")
-            .tags(vec!["Test 1", "Test 2"])
+            .tags(["Test 1", "Test 2"])
             .build();
 
         let mut hash_set = HashSet::new();
@@ -162,6 +174,7 @@ mod tests {
         assert_eq!(
             task,
             Task {
+                id: 0,
                 description: "This is a test".to_string(),
                 state: State::ToDo,
                 tags: hash_set,
@@ -177,6 +190,7 @@ mod tests {
         assert_eq!(
             task,
             Task {
+                id: 0,
                 description: "This is a test".to_string(),
                 state: State::ToDo,
                 tags: HashSet::new(),
@@ -193,6 +207,7 @@ mod tests {
         assert_eq!(
             task,
             Task {
+                id: 0,
                 description: "This is a test".to_string(),
                 state: State::ToDo,
                 tags: HashSet::from(["testing-tags".to_string()]),
@@ -209,6 +224,7 @@ mod tests {
         assert_eq!(
             task,
             Task {
+                id: 0,
                 description: "This is a test".to_string(),
                 state: State::ToDo,
                 tags: HashSet::from([
