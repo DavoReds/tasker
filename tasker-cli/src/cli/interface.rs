@@ -60,6 +60,10 @@ pub enum Command {
     /// Delete To-Do's
     #[command(arg_required_else_help = true, visible_alias = "d")]
     Delete(DeleteToDo),
+
+    /// Clean completed To-Do's
+    #[command(visible_alias = "c")]
+    Clean,
 }
 
 #[derive(Args, Debug)]

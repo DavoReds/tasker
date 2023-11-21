@@ -4,7 +4,7 @@ use crate::{
 };
 use anyhow::{anyhow, Context};
 use owo_colors::OwoColorize;
-use tasker_lib::todos::{Task, ToDo};
+use tasker_lib::todos::{State, Task, ToDo};
 
 pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
     let configuration = match cli.config_file {
@@ -126,6 +126,16 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
 
             match to_do.save(&configuration.to_do_path) {
                 Ok(_) => println!("{}", "Tasks deleted".red()),
+                Err(err) => return Err(anyhow!("Failed to save To-Do file: {}", err.red())),
+            }
+        }
+        Some(Command::Clean) => {
+            let mut to_do = ToDo::get_to_do(&configuration.to_do_path)?;
+
+            to_do.tasks.retain(|task| task.state != State::Done);
+
+            match to_do.save(&configuration.to_do_path) {
+                Ok(_) => println!("{}", "Cleaned completed tasks!".blue()),
                 Err(err) => return Err(anyhow!("Failed to save To-Do file: {}", err.red())),
             }
         }
