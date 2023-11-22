@@ -2,7 +2,7 @@ use camino::Utf8PathBuf;
 use clap::{Args, Parser, Subcommand, ValueEnum};
 use tasker_lib::todos::State;
 
-/// A command-line application to manage your daily tasks.
+/// A command-line application to manage your daily Tasks.
 #[derive(Debug, Parser)]
 #[command(
     name = "Tasker CLI",
@@ -22,7 +22,7 @@ pub struct Cli {
     #[command(subcommand)]
     pub command: Option<Command>,
 
-    /// Path to a file in which to look for and save To-Do's
+    /// Path to a file in which to look for and save Tasks
     #[arg(long = "todo-file")]
     pub to_do_file: Option<Utf8PathBuf>,
 
@@ -41,34 +41,33 @@ pub struct Cli {
 {all-args}"
 ))]
 pub enum Command {
-    /// Add one To-Do
+    /// Add one Task
     #[command(arg_required_else_help = true, visible_alias = "a")]
     Add(AddToDo),
 
-    /// Add multiple To-Do's
+    /// Add multiple Tasks
     #[command(arg_required_else_help = true, name = "addm", visible_alias = "am")]
     AddMultiple(AddMultipleToDo),
 
-    /// Change the state of a To-Do
-    #[command(arg_required_else_help = true, visible_alias = "t")]
-    Toggle(ToggleToDo),
+    /// Clean completed Tasks
+    #[command(visible_alias = "c")]
+    Clean,
 
-    /// Edit a To-Do
-    #[command(arg_required_else_help = true, visible_alias = "e")]
-    Edit(EditToDo),
-
-    /// Delete To-Do's
+    /// Delete Tasks
     #[command(arg_required_else_help = true, visible_alias = "d")]
     Delete(DeleteToDo),
 
-    /// Clean completed To-Do's
-    #[command(visible_alias = "c")]
-    Clean,
-    // TODO: Create list command interface
+    /// Edit a Task
+    #[command(arg_required_else_help = true, visible_alias = "e")]
+    Edit(EditToDo),
 
-    // /// List To-Do's
-    // #[command(visible_alias = "l")]
-    // List(ListToDo),
+    /// List Tasks
+    #[command(visible_alias = "l")]
+    List(ListToDo),
+
+    /// Change the state of a Task
+    #[command(arg_required_else_help = true, visible_alias = "t")]
+    Toggle(ToggleToDo),
 }
 
 #[derive(Args, Debug)]
@@ -84,12 +83,13 @@ pub struct AddToDo {
     /// Task to accomplish, wrap in quotes for multi-word tasks.
     pub description: String,
 
-    /// Project the To-Do belongs to. Defaults to "Inbox"
+    /// Project the Task belongs to. Defaults to "Inbox"
     #[arg(short, long)]
     pub project: Option<String>,
 
-    /// Tags to classify the To-Do
-    pub tags: Option<Vec<String>>,
+    /// Tag to classify the Task. Can be called multiple times
+    #[arg(short, long)]
+    pub tag: Option<Vec<String>>,
 }
 
 #[derive(Args, Debug)]
@@ -102,13 +102,17 @@ pub struct AddToDo {
 {all-args}"
 ))]
 pub struct AddMultipleToDo {
-    /// Tasks to accomplish, wrap individual To-Dos in quotes for multi-word
-    /// To-Dos.
+    /// Tasks to accomplish, wrap individual Tasks in quotes for multi-word
+    /// Tasks.
     pub descriptions: Vec<String>,
 
-    /// Project the To-Do's belongs to. Defaults to "Inbox"
+    /// Project the Task's belongs to. Defaults to "Inbox"
     #[arg(short, long)]
     pub project: Option<String>,
+
+    /// Tag to assign the Task's. Can be called multiple times
+    #[arg(short, long)]
+    pub tag: Option<Vec<String>>,
 }
 
 #[derive(Args, Debug)]
@@ -121,30 +125,30 @@ pub struct AddMultipleToDo {
 {all-args}"
 ))]
 pub struct ToggleToDo {
-    /// State to assign the To-Do
+    /// State to assign the Task
     #[arg(value_enum)]
     pub state: ToggleState,
 
-    /// ID(s) of the To-Do(s) to toggle
+    /// ID(s) of the Task(s) to toggle
     #[arg(name = "TO-DOS")]
     pub tasks: Vec<usize>,
 }
 
 #[derive(Debug, ValueEnum, Clone, Copy)]
 pub enum ToggleState {
-    /// This To-Do hasn't started
+    /// This Task hasn't started
     #[value(name = "todo", alias = "t")]
     ToDo,
 
-    /// This To-Do is in progress
+    /// This Task is in progress
     #[value(alias = "dg")]
     Doing,
 
-    /// This To-Do is finished
+    /// This Task is finished
     #[value(alias = "dn")]
     Done,
 
-    /// This To-Do can't be accomplished due to external reasons
+    /// This Task can't be accomplished due to external reasons
     #[value(name = "wait", alias = "w", alias = "waiting")]
     Waiting,
 }
@@ -170,23 +174,24 @@ impl From<ToggleState> for State {
 {all-args}"
 ))]
 pub struct EditToDo {
-    /// ID of the To-Do to edit
+    /// ID of the Task to edit
     #[arg(name = "TO-DO")]
     pub task: usize,
 
-    /// New description for the To-Do
+    /// Change Task description
     #[arg(short, long)]
     pub description: Option<String>,
 
-    /// New state for the To-Do
+    /// Change Task progress
     #[arg(short, long, value_enum)]
     pub state: Option<ToggleState>,
 
-    /// New project for the To-Do
+    /// Change the Task's project
     #[arg(short, long)]
     pub project: Option<String>,
 
-    /// New tags for the To-Do
+    /// Replace the Task's tags. Can be called multiple times
+    #[arg(short, long)]
     pub tags: Option<Vec<String>>,
 }
 
@@ -200,40 +205,49 @@ pub struct EditToDo {
 {all-args}"
 ))]
 pub struct DeleteToDo {
-    /// Id's of To-Do(s) to delete
-    #[arg(name = "TO-DOS")]
+    /// Id's of Task(s) to delete
+    #[arg(name = "TASKS")]
     pub tasks: Vec<usize>,
 }
 
-// #[derive(Args, Debug)]
-// #[command(help_template(
-//     "\
-// {name}
-// {about-with-newline}
-// {usage-heading} {usage}
-//
-// {all-args}"
-// ))]
-// pub struct ListToDo {
-//     /// Field to sort the To-Do's by alphabetically
-//     #[arg(value_enum)]
-//     pub sort_by: Option<SortToDo>,
-//
-//     /// Rules to filter the To-Do's by.
-//     #[arg(value_enum)]
-//     pub filter_by: Option<FilterToDo>,
-// }
-//
-// #[derive(Debug, ValueEnum, Clone, Copy)]
-// pub enum SortToDo {
-//     Description,
-//     Project,
-//     State,
-// }
-//
-// #[derive(Debug, ValueEnum, Clone, Copy)]
-// pub enum FilterToDo {
-//     Description,
-//     Project,
-//     State,
-// }
+#[derive(Args, Debug)]
+#[command(help_template(
+    "\
+{name}
+{about-with-newline}
+{usage-heading} {usage}
+
+{all-args}"
+))]
+pub struct ListToDo {
+    /// Sort tasks by this field
+    #[arg(short, long, value_enum)]
+    pub sort_by: Option<SortToDo>,
+
+    /// Only show tasks containing this text within their descriptions
+    #[arg(short, long)]
+    pub description: Option<String>,
+
+    /// Only show tasks within this state of progress
+    #[arg(short, long)]
+    pub progress: Option<ToggleState>,
+
+    /// Only show tags containing this tag. Can be called multiple times
+    #[arg(short, long)]
+    pub tags: Option<Vec<String>>,
+}
+
+#[derive(Debug, ValueEnum, Clone, Copy)]
+pub enum SortToDo {
+    /// Sort by description [aliases: desc, d]
+    #[value(alias = "desc", alias = "d")]
+    Description,
+
+    /// Sort by project [aliases: pro, p]
+    #[value(alias = "pro", alias = "p")]
+    Project,
+
+    /// Sort by state [aliases: s]
+    #[value(alias = "s")]
+    State,
+}

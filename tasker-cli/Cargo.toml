@@ -3,7 +3,7 @@ name = "tasker-cli"
 version = "1.0.0"
 edition = "2021"
 authors = ["Dalia Rojas Vallejo <daliarojasvallejo@proton.me>"]
-description = "A To-Do CLI application for managing your daily tasks."
+description = "A To-Do CLI application for managing your daily Tasks."
 readme = true
 repository = "https://github.com/DavoReds/tasker"
 license = "GPL-3.0-or-later"
@@ -13,8 +13,8 @@ categories = ["command-line-utilities"]
 [dependencies]
 anyhow = "1.0.75"
 camino = { version = "1.1.6", features = ["serde1"] }
-clap = { version = "4.4.7", features = ["derive"] }
+clap = { version = "4.4.8", features = ["derive"] }
 owo-colors = "3.5.0"
-serde = { version = "1.0.192", features = ["derive"] }
+serde = { version = "1.0.193", features = ["derive"] }
 tasker-lib = { path = "../tasker-lib" }
 toml = "0.8.8"
