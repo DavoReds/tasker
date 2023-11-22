@@ -149,7 +149,7 @@ pub enum ToggleState {
     Done,
 
     /// This Task can't be accomplished due to external reasons
-    #[value(name = "wait", alias = "w", alias = "waiting")]
+    #[value(name = "wait", alias = "w")]
     Waiting,
 }
 

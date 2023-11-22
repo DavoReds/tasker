@@ -1,3 +1,5 @@
+use std::io::Write;
+
 use camino::{Utf8Path, Utf8PathBuf};
 use serde::{Deserialize, Serialize};
 use tasker_lib::{error::TaskerError, io::get_project_directories};
@@ -25,11 +27,15 @@ impl Configuration {
                 if exists {
                     Ok(toml::from_str(&std::fs::read_to_string(config_path)?)?)
                 } else {
-                    Ok(Self {
+                    let config = Self {
                         name: "John Doe".to_string(),
                         language: Language::default(),
                         to_do_path: to_do_path.to_owned(),
-                    })
+                    };
+
+                    config.save_config()?;
+
+                    Ok(config)
                 }
             }
             Err(err) => Err(TaskerError::ProjectDirectoryError(err)),
@@ -58,5 +64,13 @@ impl Configuration {
         config_dir.push("tasker-cli.toml");
 
         Ok(config_dir)
+    }
+
+    fn save_config(&self) -> Result<(), TaskerError> {
+        let mut config_file = std::fs::File::create(Configuration::get_default_path()?)?;
+
+        config_file.write_all(toml::to_string_pretty(self)?.as_bytes())?;
+
+        Ok(())
     }
 }

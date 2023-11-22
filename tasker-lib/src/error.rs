@@ -16,4 +16,7 @@ pub enum TaskerError {
 
     #[error("failed to deserialize config file: `{0}`")]
     ConfigDeserializationError(#[from] toml::de::Error),
+
+    #[error("failed to serialize config file: `{0}`")]
+    ConfigSerializationError(#[from] toml::ser::Error),
 }
