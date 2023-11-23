@@ -1,18 +1,12 @@
+pub mod helpers;
+use self::helpers::{get_index, list_tasks};
 use crate::{
-    cli::{Cli, Command, ListToDo},
+    cli::{Cli, Command},
     config::{Configuration, Language},
 };
 use anyhow::anyhow;
-use itertools::Itertools;
 use owo_colors::OwoColorize;
 use tasker_lib::todos::{State, Task, ToDo};
-
-fn get_index(to_do: &ToDo) -> usize {
-    match to_do.tasks.last() {
-        Some(last) => last.id + 1,
-        None => 0,
-    }
-}
 
 pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
     let configuration = match cli.config_file {
@@ -205,11 +199,10 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
                 },
             }
         }
-        Some(Command::List(_list)) => {
+        Some(Command::List(list)) => {
             let to_do = ToDo::get_to_do(&configuration.to_do_path)?;
 
-            // TODO: Implement listing configuration
-            list_tasks(to_do, &configuration, None);
+            list_tasks(to_do, &configuration, Some(list));
         }
         Some(Command::Toggle(toggle)) => {
             let mut to_do = ToDo::get_to_do(&configuration.to_do_path)?;
@@ -246,78 +239,4 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
     }
 
     Ok(())
-}
-
-// TODO: Implement sorting and filtering
-fn list_tasks(to_do: ToDo, config: &Configuration, args: Option<ListToDo>) {
-    let mut output = String::new();
-
-    match config.language {
-        Language::English => output.push_str(&format!(
-            "Hello, {}!\nHere's what you got for today:\n",
-            config.name
-        )),
-        Language::Spanish => output.push_str(&format!(
-            "¡Hola, {}!\nEsto es lo que tienes para hoy:\n",
-            config.name
-        )),
-    }
-
-    output.push('\n');
-
-    let projects = to_do
-        .tasks
-        .iter()
-        .unique_by(|task| &task.project)
-        .map(|task| task.project.clone())
-        .sorted();
-
-    match args {
-        Some(_) => {}
-        None => {
-            for project in projects {
-                output.push_str(&format!("{}\n\n", project.purple().underline()));
-
-                to_do
-                    .tasks
-                    .iter()
-                    .filter(|task| task.project == project)
-                    .for_each(|task| {
-                        output.push_str(&format!("{}. {}\n", task.id.purple(), task.description));
-
-                        match config.language {
-                            Language::English => match task.state {
-                                State::ToDo => output.push_str(&format!("[{}] ", "To-Do".blue())),
-                                State::Doing => {
-                                    output.push_str(&format!("[{}] ", "Doing".yellow()))
-                                }
-                                State::Done => output.push_str(&format!("[{}] ", "Done".green())),
-                                State::Waiting => {
-                                    output.push_str(&format!("[{}] ", "Waiting".red()))
-                                }
-                            },
-                            Language::Spanish => match task.state {
-                                State::ToDo => {
-                                    output.push_str(&format!("[{}] ", "Por Hacer".blue()))
-                                }
-                                State::Doing => {
-                                    output.push_str(&format!("[{}] ", "Haciendo".yellow()))
-                                }
-                                State::Done => output.push_str(&format!("[{}] ", "Hecho".green())),
-                                State::Waiting => {
-                                    output.push_str(&format!("[{}] ", "Esperando".red()))
-                                }
-                            },
-                        }
-
-                        output.push_str("{ ");
-                        let tags = task.tags.iter().join(", ");
-                        output.push_str(&tags);
-                        output.push_str(" }\n\n");
-                    });
-            }
-        }
-    }
-
-    print!("{output}");
 }

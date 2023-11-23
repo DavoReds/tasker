@@ -186,11 +186,11 @@ pub struct EditToDo {
     #[arg(short, long, value_enum)]
     pub state: Option<ToggleState>,
 
-    /// Change the Task's project
+    /// Change Task project
     #[arg(short, long)]
     pub project: Option<String>,
 
-    /// Replace the Task's tags. Can be called multiple times
+    /// Replace Task tags. Can be called multiple times
     #[arg(short, long)]
     pub tags: Option<Vec<String>>,
 }
@@ -220,21 +220,25 @@ pub struct DeleteToDo {
 {all-args}"
 ))]
 pub struct ListToDo {
-    /// Sort tasks by this field
-    #[arg(short, long, value_enum)]
+    /// Sort Tasks by this field
+    #[arg(short = 'S', long, value_enum)]
     pub sort_by: Option<SortToDo>,
 
-    /// Only show tasks containing this text within their descriptions
+    /// Only show Tasks containing this text within their descriptions
     #[arg(short, long)]
     pub description: Option<String>,
 
-    /// Only show tasks within this state of progress
+    /// Only show Tasks within this state of progress
     #[arg(short, long)]
-    pub progress: Option<ToggleState>,
+    pub state: Option<ToggleState>,
 
-    /// Only show tags containing this tag. Can be called multiple times
+    /// Only show Tasks containing this tag. Can be called multiple times
     #[arg(short, long)]
-    pub tags: Option<Vec<String>>,
+    pub tag: Option<Vec<String>>,
+
+    /// Only show Tasks belonging to this project
+    #[arg(short, long)]
+    pub project: Option<String>,
 }
 
 #[derive(Debug, ValueEnum, Clone, Copy)]
@@ -250,4 +254,8 @@ pub enum SortToDo {
     /// Sort by state [aliases: s]
     #[value(alias = "s")]
     State,
+
+    /// Sort by ID [aliases: i]
+    #[value(alias = "i")]
+    ID,
 }

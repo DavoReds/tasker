@@ -11,13 +11,13 @@ pub struct Task {
     pub project: String,
 }
 
-#[derive(Debug, Deserialize, Serialize, Default, PartialEq, Eq, Clone)]
+#[derive(Debug, Deserialize, Serialize, Default, PartialEq, Eq, Clone, PartialOrd, Ord)]
 pub enum State {
     #[default]
     ToDo,
     Doing,
-    Done,
     Waiting,
+    Done,
 }
 
 impl Task {
