@@ -42,19 +42,6 @@ fn push_task(task: &Task, string: &mut String, config: &Configuration) {
 pub fn list_tasks(to_do: ToDo, config: &Configuration, args: Option<ListToDo>) {
     let mut output = String::new();
 
-    match config.language {
-        Language::English => output.push_str(&format!(
-            "Hello, {}!\nHere's what you got for today:\n",
-            config.name
-        )),
-        Language::Spanish => output.push_str(&format!(
-            "¡Hola, {}!\nEsto es lo que tienes para hoy:\n",
-            config.name
-        )),
-    }
-
-    output.push('\n');
-
     match args {
         Some(options) => {
             let mut tasks = to_do.tasks;
@@ -98,6 +85,19 @@ pub fn list_tasks(to_do: ToDo, config: &Configuration, args: Option<ListToDo>) {
                 .for_each(|task| push_task(task, &mut output, config));
         }
         None => {
+            match config.language {
+                Language::English => output.push_str(&format!(
+                    "Hello, {}!\nHere's what you got for today:\n",
+                    config.name
+                )),
+                Language::Spanish => output.push_str(&format!(
+                    "¡Hola, {}!\nEsto es lo que tienes para hoy:\n",
+                    config.name
+                )),
+            }
+
+            output.push('\n');
+
             let projects = to_do
                 .tasks
                 .iter()
