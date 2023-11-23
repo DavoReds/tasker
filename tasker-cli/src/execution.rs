@@ -5,7 +5,6 @@ use crate::{
 use anyhow::anyhow;
 use itertools::Itertools;
 use owo_colors::OwoColorize;
-use std::collections::HashSet;
 use tasker_lib::todos::{State, Task, ToDo};
 
 fn get_index(to_do: &ToDo) -> usize {
@@ -266,11 +265,12 @@ fn list_tasks(to_do: ToDo, config: &Configuration, args: Option<ListToDo>) {
 
     output.push('\n');
 
-    let mut projects = HashSet::new();
-
-    to_do.tasks.iter().for_each(|task| {
-        projects.insert(task.project.clone());
-    });
+    let projects = to_do
+        .tasks
+        .iter()
+        .unique_by(|task| &task.project)
+        .map(|task| task.project.clone())
+        .sorted();
 
     match args {
         Some(_) => {}
@@ -319,5 +319,5 @@ fn list_tasks(to_do: ToDo, config: &Configuration, args: Option<ListToDo>) {
         }
     }
 
-    println!("{output}");
+    print!("{output}");
 }
