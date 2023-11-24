@@ -47,7 +47,11 @@ pub fn list_tasks(to_do: ToDo, config: &Configuration, args: Option<ListToDo>) {
             let mut tasks = to_do.tasks;
 
             if let Some(description) = options.description {
-                tasks.retain(|task| task.description.contains(&description));
+                tasks.retain(|task| {
+                    task.description
+                        .to_lowercase()
+                        .contains(&description.to_lowercase())
+                });
             }
 
             if let Some(state) = options.state {
@@ -60,7 +64,11 @@ pub fn list_tasks(to_do: ToDo, config: &Configuration, args: Option<ListToDo>) {
             }
 
             if let Some(project) = options.project {
-                tasks.retain(|task| task.project.contains(&project));
+                tasks.retain(|task| {
+                    task.project
+                        .to_lowercase()
+                        .contains(&project.to_lowercase())
+                });
             }
 
             if let Some(sort_options) = options.sort_by {
@@ -70,8 +78,6 @@ pub fn list_tasks(to_do: ToDo, config: &Configuration, args: Option<ListToDo>) {
                             .to_lowercase()
                             .cmp(&b.description.to_lowercase())
                     }),
-                    // FIXME: I could print the projects here, to the sorting
-                    // makes sense visually
                     SortToDo::Project => tasks.sort_unstable_by(|a, b| {
                         a.project.to_lowercase().cmp(&b.project.to_lowercase())
                     }),
