@@ -6,7 +6,7 @@ use crate::{
 };
 use anyhow::anyhow;
 use owo_colors::OwoColorize;
-use tasker_lib::{
+use lib_tasker::{
     io::get_project_directories,
     todos::{State, Task, ToDo},
 };

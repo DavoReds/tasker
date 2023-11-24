@@ -1,6 +1,6 @@
 use camino::Utf8PathBuf;
 use clap::{Args, Parser, Subcommand, ValueEnum};
-use tasker_lib::todos::State;
+use lib_tasker::todos::State;
 
 /// A command-line application to manage your daily Tasks.
 #[derive(Debug, Parser)]
