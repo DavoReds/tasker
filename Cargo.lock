@@ -220,6 +220,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "lib-tasker"
+version = "0.1.0"
+dependencies = [
+ "camino",
+ "directories",
+ "ron",
+ "serde",
+ "str_slug",
+ "thiserror",
+ "toml",
+]
+
+[[package]]
 name = "libc"
 version = "0.2.150"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -367,22 +380,9 @@ dependencies = [
  "camino",
  "clap",
  "itertools",
+ "lib-tasker",
  "owo-colors",
  "serde",
- "tasker-lib",
- "toml",
-]
-
-[[package]]
-name = "tasker-lib"
-version = "0.1.0"
-dependencies = [
- "camino",
- "directories",
- "ron",
- "serde",
- "str_slug",
- "thiserror",
  "toml",
 ]
 

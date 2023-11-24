@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["tasker-cli", "tasker-lib"]
+members = ["tasker-cli", "lib-tasker"]
 
 [profile.release]
 strip = true

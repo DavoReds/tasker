@@ -2,7 +2,7 @@ use std::io::Write;
 
 use camino::{Utf8Path, Utf8PathBuf};
 use serde::{Deserialize, Serialize};
-use tasker_lib::{error::TaskerError, io::get_project_directories};
+use lib_tasker::{error::TaskerError, io::get_project_directories};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Configuration {

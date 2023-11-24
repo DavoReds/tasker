@@ -6,7 +6,7 @@ use crate::{
 };
 use itertools::Itertools;
 use owo_colors::OwoColorize;
-use tasker_lib::todos::{State, Task, ToDo};
+use lib_tasker::todos::{State, Task, ToDo};
 
 pub fn get_index(to_do: &ToDo) -> usize {
     match to_do.tasks.last() {
