@@ -1,3 +1,5 @@
+name: Relase Binaries
+
 on:
   release:
     types: [created]
