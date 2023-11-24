@@ -6,7 +6,10 @@ use crate::{
 };
 use anyhow::anyhow;
 use owo_colors::OwoColorize;
-use tasker_lib::todos::{State, Task, ToDo};
+use tasker_lib::{
+    io::get_project_directories,
+    todos::{State, Task, ToDo},
+};
 
 pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
     let configuration = match cli.config_file {
@@ -203,6 +206,12 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
             let to_do = ToDo::get_to_do(&configuration.to_do_path)?;
 
             list_tasks(to_do, &configuration, Some(list));
+        }
+        Some(Command::Paths) => {
+            let paths = get_project_directories()?;
+
+            println!("Config path: {}", paths.config_dir().display());
+            println!("Data path: {}", paths.data_dir().display());
         }
         Some(Command::Toggle(toggle)) => {
             let mut to_do = ToDo::get_to_do(&configuration.to_do_path)?;

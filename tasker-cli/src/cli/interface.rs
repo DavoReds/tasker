@@ -65,6 +65,10 @@ pub enum Command {
     #[command(visible_alias = "l")]
     List(ListToDo),
 
+    /// Print default paths for the application
+    #[command(visible_alias = "p")]
+    Paths,
+
     /// Change the state of a Task
     #[command(arg_required_else_help = true, visible_alias = "t")]
     Toggle(ToggleToDo),
