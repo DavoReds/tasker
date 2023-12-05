@@ -1,6 +1,6 @@
 [package]
 name = "tasker-cli"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 authors = ["Dalia Rojas Vallejo <daliarojasvallejo@proton.me>"]
 description = "A To-Do CLI application for managing your daily Tasks."
@@ -17,5 +17,5 @@ clap = { version = "4.4.8", features = ["derive"] }
 itertools = "0.12.0"
 owo-colors = "3.5.0"
 serde = { version = "1.0.193", features = ["derive"] }
-lib-tasker = { path = "../lib-tasker", version = "0.1.0"}
+lib-tasker = { path = "../lib-tasker", version = "0.1.1" }
 toml = "0.8.8"
