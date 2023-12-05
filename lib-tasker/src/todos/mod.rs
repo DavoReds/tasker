@@ -1,7 +1,7 @@
 pub mod tasks;
-pub use tasks::*;
 
 use serde::{Deserialize, Serialize};
+pub use tasks::*;
 
 #[derive(Debug, Deserialize, Serialize, Clone, Default, PartialEq, Eq)]
 pub struct ToDo {
@@ -43,4 +43,3 @@ mod tests {
         );
     }
 }
-

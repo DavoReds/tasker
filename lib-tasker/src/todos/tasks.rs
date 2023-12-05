@@ -11,7 +11,17 @@ pub struct Task {
     pub project: String,
 }
 
-#[derive(Debug, Deserialize, Serialize, Default, PartialEq, Eq, Clone, PartialOrd, Ord)]
+#[derive(
+    Debug,
+    Deserialize,
+    Serialize,
+    Default,
+    PartialEq,
+    Eq,
+    Clone,
+    PartialOrd,
+    Ord,
+)]
 pub enum State {
     #[default]
     ToDo,
@@ -35,12 +45,18 @@ impl Task {
         self.tags.insert(slug(tag.into()));
     }
 
-    pub fn add_tags(&mut self, tags: impl IntoIterator<Item = impl Into<String>>) {
+    pub fn add_tags(
+        &mut self,
+        tags: impl IntoIterator<Item = impl Into<String>>,
+    ) {
         self.tags
             .extend(tags.into_iter().map(|tag| slug(tag.into())));
     }
 
-    pub fn replace_tags(&mut self, tags: impl IntoIterator<Item = impl Into<String>>) {
+    pub fn replace_tags(
+        &mut self,
+        tags: impl IntoIterator<Item = impl Into<String>>,
+    ) {
         self.tags = tags.into_iter().map(|tag| slug(tag.into())).collect()
     }
 
@@ -91,8 +107,12 @@ impl TaskBuilder {
         self
     }
 
-    pub fn tags(&mut self, tags: impl IntoIterator<Item = impl Into<String>>) -> &mut Self {
-        self.tags = Some(tags.into_iter().map(|tag| slug(tag.into())).collect());
+    pub fn tags(
+        &mut self,
+        tags: impl IntoIterator<Item = impl Into<String>>,
+    ) -> &mut Self {
+        self.tags =
+            Some(tags.into_iter().map(|tag| slug(tag.into())).collect());
         self
     }
 
@@ -201,7 +221,8 @@ mod tests {
 
     #[test]
     fn add_tag_works() {
-        let mut task = Task::create("This is a test").project("Testing").build();
+        let mut task =
+            Task::create("This is a test").project("Testing").build();
         task.add_tag("Testing tags");
 
         assert_eq!(
@@ -218,7 +239,8 @@ mod tests {
 
     #[test]
     fn add_tags_works() {
-        let mut task = Task::create("This is a test").project("Testing").build();
+        let mut task =
+            Task::create("This is a test").project("Testing").build();
         task.add_tags(["Testing tags", "another tag", "Yet Another Tag"]);
 
         assert_eq!(
@@ -237,4 +259,3 @@ mod tests {
         );
     }
 }
-

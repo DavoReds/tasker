@@ -48,11 +48,16 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
             match to_do.save(&configuration.to_do_path) {
                 Ok(_) => match configuration.language {
                     Language::English => println!("{}", "Task added".green()),
-                    Language::Spanish => println!("{}", "Tarea añadida".green()),
+                    Language::Spanish => {
+                        println!("{}", "Tarea añadida".green())
+                    }
                 },
                 Err(err) => match configuration.language {
                     Language::English => {
-                        return Err(anyhow!("Failed to save Task file: {}", err.red()))
+                        return Err(anyhow!(
+                            "Failed to save Task file: {}",
+                            err.red()
+                        ))
                     }
                     Language::Spanish => {
                         return Err(anyhow!(
@@ -69,36 +74,45 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
 
             match add.project {
                 Some(project) => {
-                    to_do.tasks.extend(add.descriptions.into_iter().map(|desc| {
-                        let last_index = index;
-                        index += 1;
-                        Task::create(desc)
-                            .id(last_index)
-                            .project(project.clone())
-                            .tags(add.tag.clone().unwrap_or_default())
-                            .build()
-                    }));
+                    to_do.tasks.extend(add.descriptions.into_iter().map(
+                        |desc| {
+                            let last_index = index;
+                            index += 1;
+                            Task::create(desc)
+                                .id(last_index)
+                                .project(project.clone())
+                                .tags(add.tag.clone().unwrap_or_default())
+                                .build()
+                        },
+                    ));
                 }
                 None => {
-                    to_do.tasks.extend(add.descriptions.into_iter().map(|desc| {
-                        let last_index = index;
-                        index += 1;
-                        Task::create(desc)
-                            .id(last_index)
-                            .tags(add.tag.clone().unwrap_or_default())
-                            .build()
-                    }));
+                    to_do.tasks.extend(add.descriptions.into_iter().map(
+                        |desc| {
+                            let last_index = index;
+                            index += 1;
+                            Task::create(desc)
+                                .id(last_index)
+                                .tags(add.tag.clone().unwrap_or_default())
+                                .build()
+                        },
+                    ));
                 }
             }
 
             match to_do.save(&configuration.to_do_path) {
                 Ok(_) => match configuration.language {
                     Language::English => println!("{}", "Tasks added".green()),
-                    Language::Spanish => println!("{}", "Tareas añadidas".green()),
+                    Language::Spanish => {
+                        println!("{}", "Tareas añadidas".green())
+                    }
                 },
                 Err(err) => match configuration.language {
                     Language::English => {
-                        return Err(anyhow!("Failed to save Task file: {}", err.red()))
+                        return Err(anyhow!(
+                            "Failed to save Task file: {}",
+                            err.red()
+                        ))
                     }
                     Language::Spanish => {
                         return Err(anyhow!(
@@ -116,14 +130,22 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
 
             match to_do.save(&configuration.to_do_path) {
                 Ok(_) => match configuration.language {
-                    Language::English => println!("{}", "Cleaned completed tasks".purple()),
+                    Language::English => {
+                        println!("{}", "Cleaned completed tasks".purple())
+                    }
                     Language::Spanish => {
-                        println!("{}", "Se limpiaron las Tareas completadas".purple())
+                        println!(
+                            "{}",
+                            "Se limpiaron las Tareas completadas".purple()
+                        )
                     }
                 },
                 Err(err) => match configuration.language {
                     Language::English => {
-                        return Err(anyhow!("Failed to save Task file: {}", err.red()))
+                        return Err(anyhow!(
+                            "Failed to save Task file: {}",
+                            err.red()
+                        ))
                     }
                     Language::Spanish => {
                         return Err(anyhow!(
@@ -142,11 +164,16 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
             match to_do.save(&configuration.to_do_path) {
                 Ok(_) => match configuration.language {
                     Language::English => println!("{}", "Tasks deleted".red()),
-                    Language::Spanish => println!("{}", "Tareas eliminadas".red()),
+                    Language::Spanish => {
+                        println!("{}", "Tareas eliminadas".red())
+                    }
                 },
                 Err(err) => match configuration.language {
                     Language::English => {
-                        return Err(anyhow!("Failed to save Task file: {}", err.red()))
+                        return Err(anyhow!(
+                            "Failed to save Task file: {}",
+                            err.red()
+                        ))
                     }
                     Language::Spanish => {
                         return Err(anyhow!(
@@ -179,8 +206,12 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
                     }
                 }
                 None => match configuration.language {
-                    Language::English => return Err(anyhow!("Task doesn't exist".red())),
-                    Language::Spanish => return Err(anyhow!("Tarea no existe".red())),
+                    Language::English => {
+                        return Err(anyhow!("Task doesn't exist".red()))
+                    }
+                    Language::Spanish => {
+                        return Err(anyhow!("Tarea no existe".red()))
+                    }
                 },
             }
 
@@ -191,7 +222,10 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
                 },
                 Err(err) => match configuration.language {
                     Language::English => {
-                        return Err(anyhow!("Failed to save Task file: {}", err.red()))
+                        return Err(anyhow!(
+                            "Failed to save Task file: {}",
+                            err.red()
+                        ))
                     }
                     Language::Spanish => {
                         return Err(anyhow!(
@@ -224,12 +258,19 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
 
             match to_do.save(&configuration.to_do_path) {
                 Ok(_) => match configuration.language {
-                    Language::English => println!("{}", "State changed".yellow()),
-                    Language::Spanish => println!("{}", "Estado cambiado".yellow()),
+                    Language::English => {
+                        println!("{}", "State changed".yellow())
+                    }
+                    Language::Spanish => {
+                        println!("{}", "Estado cambiado".yellow())
+                    }
                 },
                 Err(err) => match configuration.language {
                     Language::English => {
-                        return Err(anyhow!("Failed to save Task file: {}", err.red()))
+                        return Err(anyhow!(
+                            "Failed to save Task file: {}",
+                            err.red()
+                        ))
                     }
                     Language::Spanish => {
                         return Err(anyhow!(
@@ -249,4 +290,3 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
 
     Ok(())
 }
-

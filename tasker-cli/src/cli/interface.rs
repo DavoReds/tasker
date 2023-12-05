@@ -46,7 +46,11 @@ pub enum Command {
     Add(AddToDo),
 
     /// Add multiple Tasks
-    #[command(arg_required_else_help = true, name = "addm", visible_alias = "am")]
+    #[command(
+        arg_required_else_help = true,
+        name = "addm",
+        visible_alias = "am"
+    )]
     AddMultiple(AddMultipleToDo),
 
     /// Clean completed Tasks

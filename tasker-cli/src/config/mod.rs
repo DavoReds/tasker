@@ -1,8 +1,7 @@
-use std::io::Write;
-
 use camino::{Utf8Path, Utf8PathBuf};
-use serde::{Deserialize, Serialize};
 use lib_tasker::{error::TaskerError, io::get_project_directories};
+use serde::{Deserialize, Serialize};
+use std::io::Write;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Configuration {
@@ -48,9 +47,9 @@ impl Configuration {
                 if exists {
                     Ok(toml::from_str(&std::fs::read_to_string(file_path)?)?)
                 } else {
-                    Err(TaskerError::ProjectDirectoryError(std::io::Error::from(
-                        std::io::ErrorKind::NotFound,
-                    )))
+                    Err(TaskerError::ProjectDirectoryError(
+                        std::io::Error::from(std::io::ErrorKind::NotFound),
+                    ))
                 }
             }
             Err(err) => Err(TaskerError::ProjectDirectoryError(err)),
@@ -60,14 +59,16 @@ impl Configuration {
     pub fn get_default_path() -> Result<Utf8PathBuf, TaskerError> {
         let dirs = get_project_directories()?;
 
-        let mut config_dir = Utf8PathBuf::try_from(dirs.config_dir().to_path_buf())?;
+        let mut config_dir =
+            Utf8PathBuf::try_from(dirs.config_dir().to_path_buf())?;
         config_dir.push("tasker-cli.toml");
 
         Ok(config_dir)
     }
 
     fn save_config(&self) -> Result<(), TaskerError> {
-        let mut config_file = std::fs::File::create(Configuration::get_default_path()?)?;
+        let mut config_file =
+            std::fs::File::create(Configuration::get_default_path()?)?;
 
         config_file.write_all(toml::to_string_pretty(self)?.as_bytes())?;
 

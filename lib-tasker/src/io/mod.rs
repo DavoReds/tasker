@@ -4,12 +4,13 @@ use directories::ProjectDirs;
 use std::io::Write;
 
 pub fn get_project_directories() -> Result<ProjectDirs, TaskerError> {
-    let project_directories = ProjectDirs::from("dev", "DaliaReds", "tasker").ok_or(
-        TaskerError::ProjectDirectoryError(std::io::Error::new(
+    let project_directories = ProjectDirs::from("dev", "DaliaReds", "tasker")
+        .ok_or(TaskerError::ProjectDirectoryError(
+        std::io::Error::new(
             std::io::ErrorKind::Unsupported,
             "System not supported",
-        )),
-    )?;
+        ),
+    ))?;
 
     if !project_directories.config_dir().exists() {
         std::fs::create_dir_all(project_directories.config_dir())?;
@@ -27,7 +28,9 @@ impl ToDo {
         match file_path.try_exists() {
             Ok(exists) => {
                 if exists {
-                    Ok(ron::from_str(std::fs::read_to_string(file_path)?.as_str())?)
+                    Ok(ron::from_str(
+                        std::fs::read_to_string(file_path)?.as_str(),
+                    )?)
                 } else {
                     Ok(Self::default())
                 }
@@ -39,7 +42,8 @@ impl ToDo {
     pub fn get_default_to_do_path() -> Result<Utf8PathBuf, TaskerError> {
         let dirs = get_project_directories()?;
 
-        let mut config_dir = Utf8PathBuf::try_from(dirs.data_dir().to_path_buf())?;
+        let mut config_dir =
+            Utf8PathBuf::try_from(dirs.data_dir().to_path_buf())?;
         config_dir.push("todo.ron");
 
         Ok(config_dir)

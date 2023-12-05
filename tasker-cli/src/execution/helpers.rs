@@ -1,12 +1,11 @@
-use std::collections::HashSet;
-
 use crate::{
     cli::{ListToDo, SortToDo},
     config::{Configuration, Language},
 };
 use itertools::Itertools;
-use owo_colors::OwoColorize;
 use lib_tasker::todos::{State, Task, ToDo};
+use owo_colors::OwoColorize;
+use std::collections::HashSet;
 
 pub fn get_index(to_do: &ToDo) -> usize {
     match to_do.tasks.last() {
@@ -21,15 +20,25 @@ fn push_task(task: &Task, string: &mut String, config: &Configuration) {
     match config.language {
         Language::English => match task.state {
             State::ToDo => string.push_str(&format!("[{}] ", "To-Do".blue())),
-            State::Doing => string.push_str(&format!("[{}] ", "Doing".yellow())),
+            State::Doing => {
+                string.push_str(&format!("[{}] ", "Doing".yellow()))
+            }
             State::Done => string.push_str(&format!("[{}] ", "Done".green())),
-            State::Waiting => string.push_str(&format!("[{}] ", "Waiting".red())),
+            State::Waiting => {
+                string.push_str(&format!("[{}] ", "Waiting".red()))
+            }
         },
         Language::Spanish => match task.state {
-            State::ToDo => string.push_str(&format!("[{}] ", "Por Hacer".blue())),
-            State::Doing => string.push_str(&format!("[{}] ", "Haciendo".yellow())),
+            State::ToDo => {
+                string.push_str(&format!("[{}] ", "Por Hacer".blue()))
+            }
+            State::Doing => {
+                string.push_str(&format!("[{}] ", "Haciendo".yellow()))
+            }
             State::Done => string.push_str(&format!("[{}] ", "Hecho".green())),
-            State::Waiting => string.push_str(&format!("[{}] ", "Esperando".red())),
+            State::Waiting => {
+                string.push_str(&format!("[{}] ", "Esperando".red()))
+            }
         },
     }
 
@@ -81,8 +90,12 @@ pub fn list_tasks(to_do: ToDo, config: &Configuration, args: Option<ListToDo>) {
                     SortToDo::Project => tasks.sort_unstable_by(|a, b| {
                         a.project.to_lowercase().cmp(&b.project.to_lowercase())
                     }),
-                    SortToDo::ID => tasks.sort_unstable_by(|a, b| a.id.cmp(&b.id)),
-                    SortToDo::State => tasks.sort_unstable_by(|a, b| a.state.cmp(&b.state)),
+                    SortToDo::ID => {
+                        tasks.sort_unstable_by(|a, b| a.id.cmp(&b.id))
+                    }
+                    SortToDo::State => {
+                        tasks.sort_unstable_by(|a, b| a.state.cmp(&b.state))
+                    }
                 }
             }
 
@@ -112,7 +125,8 @@ pub fn list_tasks(to_do: ToDo, config: &Configuration, args: Option<ListToDo>) {
                 .sorted();
 
             for project in projects {
-                output.push_str(&format!("{}\n\n", project.purple().underline()));
+                output
+                    .push_str(&format!("{}\n\n", project.purple().underline()));
 
                 to_do
                     .tasks

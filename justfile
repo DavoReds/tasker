@@ -10,9 +10,11 @@ alias pa := package-all
 _default:
     @just --list --justfile {{ justfile() }}
 
-# Test using cargo nextest
+# Test code, formatting and best practices
 test *args:
     cargo nextest run {{ args }}
+    cargo fmt --check
+    cargo clippy -- -D warnings
 
 # Clean cargo artifacts and dist directory
 @clean:
@@ -27,7 +29,6 @@ linux := "x86_64-unknown-linux-musl"
 # Build .exe for Windows
 build-windows *args:
     cargo zigbuild -r --target {{ windows }} {{ args }}
-    upx ./target/{{ windows }}/release/tasker-cli.exe
 
 # Build executables for x86 and ARM Mac's
 build-mac *args:
@@ -37,7 +38,6 @@ build-mac *args:
 # Build statically linked Linux executable
 build-linux *args:
     cargo zigbuild -r --target {{ linux }} {{ args }}
-    upx ./target/{{ linux }}/release/tasker-cli
 
 # Build release executables for all three major operating systems
 build-all: build-windows build-mac build-linux
@@ -45,18 +45,20 @@ build-all: build-windows build-mac build-linux
 # Package Linux executable
 package-linux:
     @mkdir -p dist
-    ouch c --slow ./target/{{ linux }}/release/tasker-cli README.md COPYING ./dist/tasker-cli-linux.tar.gz
+    upx ./target/{{ linux }}/release/tasker-cli
+    ouch c --slow ./target/{{ linux }}/release/tasker-cli README.md COPYING ./dist/tasker-cli-x86_64-linux.tar.gz
 
 # Package Windows executable
 package-windows:
     @mkdir -p dist
-    ouch c --slow ./target/{{ windows }}/release/tasker-cli.exe README.md COPYING ./dist/tasker-cli-windows.zip
+    upx ./target/{{ windows }}/release/tasker-cli.exe
+    ouch c --slow ./target/{{ windows }}/release/tasker-cli.exe README.md COPYING ./dist/tasker-cli-x86_64-windows.zip
 
 # Package Mac executables
 package-mac:
     @mkdir -p dist
-    ouch c --slow ./target/{{ mac_x86 }}/release/tasker-cli README.md COPYING ./dist/tasker-cli-mac-x86.zip
-    ouch c --slow ./target/{{ mac_arm }}/release/tasker-cli README.md COPYING ./dist/tasker-cli-mac-arm.zip
+    ouch c --slow ./target/{{ mac_x86 }}/release/tasker-cli README.md COPYING ./dist/tasker-cli-x86_64_mac.zip
+    ouch c --slow ./target/{{ mac_arm }}/release/tasker-cli README.md COPYING ./dist/tasker-cli-aarch64-mac.zip
 
 # Package all executables
 package-all: build-all package-windows package-mac package-linux
