@@ -1,20 +1,20 @@
 [package]
 name = "lib-tasker"
 version = "0.1.1"
-edition = "2021"
 authors = ["Dalia Rojas Vallejo <daliarojasvallejo@proton.me>"]
-description = "Library for Tasker applications"
+categories = ["command-line-utilities"]
+edition = "2021"
+keywords = ["todo", "app", "cli"]
+license = "GPL-3.0-or-later"
 readme = true
 repository = "https://github.com/DavoReds/tasker"
-license = "GPL-3.0-or-later"
-keywords = ["todo", "app", "cli"]
-categories = ["command-line-utilities"]
+description = "Library for Tasker applications"
 
 [dependencies]
-serde = { version = "1.0.193", features = ["derive"] }
-str_slug = "0.1.3"
+camino = { workspace = true }
 directories = "5.0.1"
 ron = "0.8.1"
+serde = { workspace = true }
+str_slug = "0.1.3"
 thiserror = "1.0.50"
-toml = "0.8.8"
-camino = { version = "1.1.6", features = ["serde1"] }
+toml = { workspace = true }
