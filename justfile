@@ -46,19 +46,19 @@ build-all: build-windows build-mac build-linux
 package-linux:
     @mkdir -p dist
     upx ./target/{{ linux }}/release/tasker-cli
-    ouch c --slow ./target/{{ linux }}/release/tasker-cli README.md COPYING ./dist/tasker-cli-x86_64-linux.tar.gz
+    ouch c --slow ./target/{{ linux }}/release/tasker-cli README.md COPYING ./dist/tasker-cli-{{ linux }}.tar.gz
 
 # Package Windows executable
 package-windows:
     @mkdir -p dist
     upx ./target/{{ windows }}/release/tasker-cli.exe
-    ouch c --slow ./target/{{ windows }}/release/tasker-cli.exe README.md COPYING ./dist/tasker-cli-x86_64-windows.zip
+    ouch c --slow ./target/{{ windows }}/release/tasker-cli.exe README.md COPYING ./dist/tasker-cli-{{ windows }}.zip
 
 # Package Mac executables
 package-mac:
     @mkdir -p dist
-    ouch c --slow ./target/{{ mac_x86 }}/release/tasker-cli README.md COPYING ./dist/tasker-cli-x86_64_mac.zip
-    ouch c --slow ./target/{{ mac_arm }}/release/tasker-cli README.md COPYING ./dist/tasker-cli-aarch64-mac.zip
+    ouch c --slow ./target/{{ mac_x86 }}/release/tasker-cli README.md COPYING ./dist/tasker-cli-{{ mac_x86 }}.zip
+    ouch c --slow ./target/{{ mac_arm }}/release/tasker-cli README.md COPYING ./dist/tasker-cli-{{ mac_arm }}.zip
 
 # Package all executables
 package-all: build-all package-windows package-mac package-linux
