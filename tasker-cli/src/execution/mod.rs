@@ -5,11 +5,11 @@ use crate::{
     config::{Configuration, Language},
 };
 use anyhow::anyhow;
-use owo_colors::OwoColorize;
 use lib_tasker::{
     io::get_project_directories,
     todos::{State, Task, ToDo},
 };
+use owo_colors::OwoColorize;
 
 pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
     let configuration = match cli.config_file {
@@ -249,3 +249,4 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
 
     Ok(())
 }
+
