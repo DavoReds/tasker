@@ -9,13 +9,14 @@ license = "GPL-3.0-or-later"
 readme = true
 repository = "https://github.com/DavoReds/tasker"
 description = "A To-Do CLI application for managing your daily Tasks."
+rust-version = "1.70.0"
 
 [dependencies]
-anyhow = "1.0.75"
+anyhow = "1.0.77"
 camino = { workspace = true }
-clap = { version = "4.4.11", features = ["derive"] }
+clap = { version = "4.4.12", features = ["derive"] }
 itertools = "0.12.0"
 lib-tasker = { path = "../lib-tasker", version = "0.1.2" }
-owo-colors = "3.5.0"
+owo-colors = "4.0.0"
 serde = { workspace = true }
 toml = { workspace = true }
