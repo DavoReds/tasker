@@ -1,6 +1,6 @@
 [package]
 name = "tasker-cli"
-version = "1.0.3"
+version = "1.0.4"
 authors = ["Dalia Rojas Vallejo <daliarojasvallejo@proton.me>"]
 categories = ["command-line-utilities"]
 edition = "2021"
@@ -16,7 +16,7 @@ camino = { workspace = true }
 clap = { version = "4.4.16", features = ["derive"] }
 color-eyre = "0.6.2"
 itertools = "0.12.0"
-lib-tasker = { path = "../lib-tasker", version = "1.0.3" }
+lib-tasker = { path = "../lib-tasker", version = "1.0.4" }
 owo-colors = "4.0.0"
 serde = { workspace = true }
 toml = { workspace = true }
