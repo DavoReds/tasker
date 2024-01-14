@@ -35,7 +35,7 @@ build-linux:
   stage: build
   image: "registry.gitlab.com/davoreds/temp-converter/builder:latest"
   rules:
-    - if: '$CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^v[0-9]\.[0-9]\.[0-9](-rc.+)?/'
+    - if: "$CI_COMMIT_TAG"
       when: always
   script:
     - rustup target add x86_64-unknown-linux-musl
@@ -51,7 +51,7 @@ build-windows:
   stage: build
   image: "registry.gitlab.com/davoreds/temp-converter/builder:latest"
   rules:
-    - if: '$CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^v[0-9]\.[0-9]\.[0-9](-rc.+)?/'
+    - if: "$CI_COMMIT_TAG"
       when: always
   script:
     - rustup target add x86_64-pc-windows-gnu
@@ -71,7 +71,7 @@ release:
     - job: build-linux
       artifacts: true
   rules:
-    - if: '$CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^v[0-9]\.[0-9]\.[0-9](-rc.+)?/'
+    - if: "$CI_COMMIT_TAG"
       when: always
   script:
     - echo "Running release job for $TAG"

@@ -36,7 +36,7 @@ installation.
 #### Binary Install
 
 You can also download a precompiled binary from the
-[releases](https://github.com/DavoReds/tasker/releases) page. Currently only
+[releases](https://gitlab.com/DavoReds/tasker/-/releases) page. Currently only
 Windows, Linux and x86 Mac's are present.
 
 Select the file corresponding to your operating system and decompress it, you
