@@ -1,0 +1,88 @@
+image: "rust:latest"
+
+cache:
+  key: "$CI_JOB_NAME"
+  untracked: true
+  paths:
+    - $HOME/.cargo/
+    - target/
+
+stages:
+  - test
+  - build
+  - release
+
+test-code:
+  stage: test
+  script:
+    - curl -LsSf https://get.nexte.st/latest/linux | tar zxf - -C
+      ${CARGO_HOME:-~/.cargo}/bin
+    - cargo nextest run
+
+format-code:
+  stage: test
+  script:
+    - rustup component add rustfmt
+    - cargo fmt -- --check
+
+lint-code:
+  stage: test
+  script:
+    - rustup component add clippy
+    - cargo clippy -- -D warnings
+
+build-linux:
+  stage: build
+  image: "registry.gitlab.com/davoreds/temp-converter/builder:latest"
+  rules:
+    - if: '$CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^v[0-9]\.[0-9]\.[0-9](-rc.+)?/'
+      when: always
+  script:
+    - rustup target add x86_64-unknown-linux-musl
+    - cargo zigbuild --release --target x86_64-unknown-linux-musl
+    - upx --best --lzma target/x86_64-unknown-linux-musl/release/tasker-cli
+    - mv ./target/x86_64-unknown-linux-musl/release/tasker-cli tasker-cli
+    - tar -cjvf tasker-cli.tar.bz2 tasker-cli UNLICENSE README.md
+    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file
+      ./tasker-cli.tar.bz2
+      "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/tasker-cli/${CI_COMMIT_TAG}/tasker-cli-linux-x86_64.tar.bz2"'
+
+build-windows:
+  stage: build
+  image: "registry.gitlab.com/davoreds/temp-converter/builder:latest"
+  rules:
+    - if: '$CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^v[0-9]\.[0-9]\.[0-9](-rc.+)?/'
+      when: always
+  script:
+    - rustup target add x86_64-pc-windows-gnu
+    - cargo zigbuild --release --target x86_64-pc-windows-gnu
+    - upx --best --lzma target/x86_64-pc-windows-gnu/release/tasker-cli.exe
+    - mv ./target/x86_64-pc-windows-gnu/release/tasker-cli.exe tasker-cli.exe
+    - zip tasker-cli.zip tasker-cli.exe UNLICENSE README.md
+    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file ./tasker-cli.zip
+      "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/tasker-cli/${CI_COMMIT_TAG}/tasker-cli-win-x86_64.zip"'
+
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  needs:
+    - job: build-windows
+      artifacts: true
+    - job: build-linux
+      artifacts: true
+  rules:
+    - if: '$CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^v[0-9]\.[0-9]\.[0-9](-rc.+)?/'
+      when: always
+  script:
+    - echo "Running release job for $TAG"
+  release:
+    name: "Release $CI_COMMIT_TAG"
+    description: "Created using the release-cli"
+    tag_name: "$CI_COMMIT_TAG"
+    ref: "$CI_COMMIT_SHA"
+    assets:
+      links:
+        - name: "Linux x86_64"
+          url: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/tasker-cli/${CI_COMMIT_TAG}/tasker-cli-linux-x86_64.tar.bz2"
+        - name: "Windows x86_64"
+          url: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/tasker-cli/${CI_COMMIT_TAG}/tasker-cli-win-x86_64.zip"

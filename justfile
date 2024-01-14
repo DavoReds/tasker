@@ -45,7 +45,7 @@ build-all: build-windows build-mac build-linux
 # Package Linux executable
 package-linux:
     @mkdir -p dist
-    upx ./target/{{ linux }}/release/tasker-cli
+    upx --best --lzma ./target/{{ linux }}/release/tasker-cli
     ouch c --slow ./target/{{ linux }}/release/tasker-cli README.md COPYING ./dist/tasker-cli-{{ linux }}.tar.gz
 
 # Package Windows executable
