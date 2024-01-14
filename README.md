@@ -1,3 +1,6 @@
+[![CI status](https://gitlab.com/DavoReds/tasker-cli/badges/main/pipeline.svg)](https://gitlab.com/DavoReds/tasker-cli/-/commits/main)
+[![Latest Release](https://gitlab.com/DavoReds/tasker-cli/-/badges/release.svg)](https://gitlab.com/DavoReds/tasker-cli/-/releases)
+
 # Tasker
 
 A series of cross-platform applications to manage your daily tasks. This
