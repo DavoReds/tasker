@@ -42,7 +42,7 @@ build-linux:
     - cargo zigbuild --release --target x86_64-unknown-linux-musl
     - upx --best --lzma target/x86_64-unknown-linux-musl/release/tasker-cli
     - mv ./target/x86_64-unknown-linux-musl/release/tasker-cli tasker-cli
-    - tar -cjvf tasker-cli.tar.bz2 tasker-cli UNLICENSE README.md
+    - tar -cjvf tasker-cli.tar.bz2 tasker-cli COPYING README.md
     - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file
       ./tasker-cli.tar.bz2
       "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/tasker/${CI_COMMIT_TAG}/tasker-cli-x86_64-unknown-linux-musl.tar.bz2"'
@@ -58,7 +58,7 @@ build-windows:
     - cargo zigbuild --release --target x86_64-pc-windows-gnu
     - upx --best --lzma target/x86_64-pc-windows-gnu/release/tasker-cli.exe
     - mv ./target/x86_64-pc-windows-gnu/release/tasker-cli.exe tasker-cli.exe
-    - zip tasker-cli.zip tasker-cli.exe UNLICENSE README.md
+    - zip tasker-cli.zip tasker-cli.exe COPYING README.md
     - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file ./tasker-cli.zip
       "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/tasker/${CI_COMMIT_TAG}/tasker-cli-x86_64-pc-windows-gnu.zip"'
 
