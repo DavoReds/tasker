@@ -4,14 +4,14 @@ use crate::{
     cli::{Cli, Command},
     config::{Configuration, Language},
 };
-use anyhow::anyhow;
+use color_eyre::eyre::eyre;
 use lib_tasker::{
     io::get_project_directories,
     todos::{State, Task, ToDo},
 };
 use owo_colors::OwoColorize;
 
-pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
+pub fn execute_application(cli: Cli) -> color_eyre::Result<()> {
     let configuration = match cli.config_file {
         Some(path) => Configuration::from_given_file(&path)?,
         None => {
@@ -54,13 +54,13 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
                 },
                 Err(err) => match configuration.language {
                     Language::English => {
-                        return Err(anyhow!(
+                        return Err(eyre!(
                             "Failed to save Task file: {}",
                             err.red()
                         ))
                     }
                     Language::Spanish => {
-                        return Err(anyhow!(
+                        return Err(eyre!(
                             "No se pudo guardar el archivo de Tareas: {}",
                             err.red()
                         ))
@@ -109,13 +109,13 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
                 },
                 Err(err) => match configuration.language {
                     Language::English => {
-                        return Err(anyhow!(
+                        return Err(eyre!(
                             "Failed to save Task file: {}",
                             err.red()
                         ))
                     }
                     Language::Spanish => {
-                        return Err(anyhow!(
+                        return Err(eyre!(
                             "No se pudo guardar archivo de Tareas: {}",
                             err.red()
                         ))
@@ -142,13 +142,13 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
                 },
                 Err(err) => match configuration.language {
                     Language::English => {
-                        return Err(anyhow!(
+                        return Err(eyre!(
                             "Failed to save Task file: {}",
                             err.red()
                         ))
                     }
                     Language::Spanish => {
-                        return Err(anyhow!(
+                        return Err(eyre!(
                             "No se pudo guardar archivo de Tareas: {}",
                             err.red()
                         ))
@@ -170,13 +170,13 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
                 },
                 Err(err) => match configuration.language {
                     Language::English => {
-                        return Err(anyhow!(
+                        return Err(eyre!(
                             "Failed to save Task file: {}",
                             err.red()
                         ))
                     }
                     Language::Spanish => {
-                        return Err(anyhow!(
+                        return Err(eyre!(
                             "No se pudo guardar archivo de Tareas: {}",
                             err.red()
                         ))
@@ -207,10 +207,10 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
                 }
                 None => match configuration.language {
                     Language::English => {
-                        return Err(anyhow!("Task doesn't exist".red()))
+                        return Err(eyre!("Task doesn't exist".red()))
                     }
                     Language::Spanish => {
-                        return Err(anyhow!("Tarea no existe".red()))
+                        return Err(eyre!("Tarea no existe".red()))
                     }
                 },
             }
@@ -222,13 +222,13 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
                 },
                 Err(err) => match configuration.language {
                     Language::English => {
-                        return Err(anyhow!(
+                        return Err(eyre!(
                             "Failed to save Task file: {}",
                             err.red()
                         ))
                     }
                     Language::Spanish => {
-                        return Err(anyhow!(
+                        return Err(eyre!(
                             "No se pudo guardar archivo de Tareas: {}",
                             err.red()
                         ))
@@ -267,13 +267,13 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
                 },
                 Err(err) => match configuration.language {
                     Language::English => {
-                        return Err(anyhow!(
+                        return Err(eyre!(
                             "Failed to save Task file: {}",
                             err.red()
                         ))
                     }
                     Language::Spanish => {
-                        return Err(anyhow!(
+                        return Err(eyre!(
                             "No se pudo guardar archivo de Tareas: {}",
                             err.red()
                         ))
