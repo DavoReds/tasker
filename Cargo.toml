@@ -3,21 +3,13 @@ resolver = "2"
 members = ["tasker-cli", "lib-tasker"]
 
 [profile.release]
-strip = true
-lto = true
 codegen-units = 1
+lto = true
 opt-level = "z"
+panic = "abort"
+strip = true
 
 [workspace.dependencies]
 camino = { version = "1.1.6", features = ["serde1"] }
-serde = { version = "1.0.196", features = ["derive"] }
+serde = { version = "1.0.197", features = ["derive"] }
 toml = "0.8.10"
-
-[lints.rust]
-unsafe_code = "forbid"
-
-[lints.clippy]
-enum_glob_use = "deny"
-pedantic = "deny"
-nursery = "deny"
-unwrap_used = "deny"

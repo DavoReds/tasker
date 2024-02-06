@@ -1,5 +1,5 @@
 use camino::{Utf8Path, Utf8PathBuf};
-use lib_tasker::{error::TaskerError, io::get_project_directories};
+use lib_tasker::{error::TaskerFailure, io::get_project_directories};
 use serde::{Deserialize, Serialize};
 use std::io::Write;
 
@@ -18,45 +18,62 @@ pub enum Language {
 }
 
 impl Configuration {
-    pub fn new(to_do_path: &Utf8Path) -> Result<Self, TaskerError> {
+    /// Returns a new configuration struct.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if it fails to determine the default paths for application
+    /// data, if it fails to deserialize the configuration file or if it fails
+    /// to determine the existence of the configuration path.
+    pub fn new(to_do_path: &Utf8Path) -> Result<Self, TaskerFailure> {
         let config_path = Self::get_default_path()?;
 
         match config_path.try_exists() {
-            Ok(exists) => {
-                if exists {
-                    Ok(toml::from_str(&std::fs::read_to_string(config_path)?)?)
-                } else {
-                    let config = Self {
-                        name: "John Doe".to_string(),
-                        language: Language::default(),
-                        to_do_path: to_do_path.to_owned(),
-                    };
-
-                    config.save_config()?;
-
-                    Ok(config)
-                }
+            Ok(true) => {
+                Ok(toml::from_str(&std::fs::read_to_string(config_path)?)?)
             }
-            Err(err) => Err(TaskerError::ProjectDirectoryError(err)),
+            Ok(false) => {
+                let config = Self {
+                    name: "John Doe".to_string(),
+                    language: Language::default(),
+                    to_do_path: to_do_path.to_owned(),
+                };
+
+                config.save_config()?;
+
+                Ok(config)
+            }
+            Err(err) => Err(TaskerFailure::ProjectDirectoryError(err)),
         }
     }
 
-    pub fn from_given_file(file_path: &Utf8Path) -> Result<Self, TaskerError> {
+    /// Deserializes a configuration struct from the given file path.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the given file path doesn't exist, or if it fails to
+    /// determine its existence.
+    pub fn from_given_file(
+        file_path: &Utf8Path,
+    ) -> Result<Self, TaskerFailure> {
         match file_path.try_exists() {
-            Ok(exists) => {
-                if exists {
-                    Ok(toml::from_str(&std::fs::read_to_string(file_path)?)?)
-                } else {
-                    Err(TaskerError::ProjectDirectoryError(
-                        std::io::Error::from(std::io::ErrorKind::NotFound),
-                    ))
-                }
+            Ok(true) => {
+                Ok(toml::from_str(&std::fs::read_to_string(file_path)?)?)
             }
-            Err(err) => Err(TaskerError::ProjectDirectoryError(err)),
+            Ok(false) => Err(TaskerFailure::ProjectDirectoryError(
+                std::io::Error::from(std::io::ErrorKind::NotFound),
+            )),
+            Err(err) => Err(TaskerFailure::ProjectDirectoryError(err)),
         }
     }
 
-    pub fn get_default_path() -> Result<Utf8PathBuf, TaskerError> {
+    /// Returns the default configuration path.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if it failes to determine the default configuration path
+    /// for the application or if said path is invalid UTF-8.
+    pub fn get_default_path() -> Result<Utf8PathBuf, TaskerFailure> {
         let dirs = get_project_directories()?;
 
         let mut config_dir =
@@ -66,9 +83,8 @@ impl Configuration {
         Ok(config_dir)
     }
 
-    fn save_config(&self) -> Result<(), TaskerError> {
-        let mut config_file =
-            std::fs::File::create(Configuration::get_default_path()?)?;
+    fn save_config(&self) -> Result<(), TaskerFailure> {
+        let mut config_file = std::fs::File::create(Self::get_default_path()?)?;
 
         config_file.write_all(toml::to_string_pretty(self)?.as_bytes())?;
 

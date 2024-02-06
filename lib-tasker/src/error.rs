@@ -1,7 +1,7 @@
 use thiserror::Error;
 
 #[derive(Debug, Error)]
-pub enum TaskerError {
+pub enum TaskerFailure {
     #[error("failed to determine project directories")]
     ProjectDirectoryError(#[from] std::io::Error),
 

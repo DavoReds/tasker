@@ -1,4 +1,5 @@
 pub mod helpers;
+
 use self::helpers::{get_index, list_tasks};
 use crate::{
     cli::{Cli, Command},
@@ -11,17 +12,22 @@ use lib_tasker::{
 };
 use owo_colors::OwoColorize;
 
+/// Executes the application.
+///
+/// # Errors
+///
+/// Returns an error if the execution of the application failed at any point.
 pub fn execute_application(cli: Cli) -> color_eyre::Result<()> {
-    let configuration = match cli.config_file {
-        Some(path) => Configuration::from_given_file(&path)?,
-        None => {
-            let to_do_path = match cli.to_do_file {
-                Some(path) => path,
-                None => ToDo::get_default_to_do_path()?,
-            };
+    let configuration = if let Some(path) = cli.config_file {
+        Configuration::from_given_file(&path)?
+    } else {
+        let to_do_path = if let Some(path) = cli.to_do_file {
+            path
+        } else {
+            ToDo::get_default_to_do_path()?
+        };
 
-            Configuration::new(&to_do_path)?
-        }
+        Configuration::new(&to_do_path)?
     };
 
     match cli.command {
@@ -46,10 +52,10 @@ pub fn execute_application(cli: Cli) -> color_eyre::Result<()> {
             }
 
             match to_do.save(&configuration.to_do_path) {
-                Ok(_) => match configuration.language {
+                Ok(()) => match configuration.language {
                     Language::English => println!("{}", "Task added".green()),
                     Language::Spanish => {
-                        println!("{}", "Tarea añadida".green())
+                        println!("{}", "Tarea añadida".green());
                     }
                 },
                 Err(err) => match configuration.language {
@@ -101,10 +107,10 @@ pub fn execute_application(cli: Cli) -> color_eyre::Result<()> {
             }
 
             match to_do.save(&configuration.to_do_path) {
-                Ok(_) => match configuration.language {
+                Ok(()) => match configuration.language {
                     Language::English => println!("{}", "Tasks added".green()),
                     Language::Spanish => {
-                        println!("{}", "Tareas añadidas".green())
+                        println!("{}", "Tareas añadidas".green());
                     }
                 },
                 Err(err) => match configuration.language {
@@ -129,15 +135,15 @@ pub fn execute_application(cli: Cli) -> color_eyre::Result<()> {
             to_do.tasks.retain(|task| task.state != State::Done);
 
             match to_do.save(&configuration.to_do_path) {
-                Ok(_) => match configuration.language {
+                Ok(()) => match configuration.language {
                     Language::English => {
-                        println!("{}", "Cleaned completed tasks".purple())
+                        println!("{}", "Cleaned completed tasks".purple());
                     }
                     Language::Spanish => {
                         println!(
                             "{}",
                             "Se limpiaron las Tareas completadas".purple()
-                        )
+                        );
                     }
                 },
                 Err(err) => match configuration.language {
@@ -162,10 +168,10 @@ pub fn execute_application(cli: Cli) -> color_eyre::Result<()> {
             to_do.tasks.retain(|task| !delete.tasks.contains(&task.id));
 
             match to_do.save(&configuration.to_do_path) {
-                Ok(_) => match configuration.language {
+                Ok(()) => match configuration.language {
                     Language::English => println!("{}", "Tasks deleted".red()),
                     Language::Spanish => {
-                        println!("{}", "Tareas eliminadas".red())
+                        println!("{}", "Tareas eliminadas".red());
                     }
                 },
                 Err(err) => match configuration.language {
@@ -189,20 +195,20 @@ pub fn execute_application(cli: Cli) -> color_eyre::Result<()> {
 
             match to_do.tasks.iter_mut().find(|task| task.id == edit.task) {
                 Some(task) => {
-                    if edit.description.is_some() {
-                        task.description = edit.description.unwrap();
+                    if let Some(description) = edit.description {
+                        task.description = description;
                     }
 
-                    if edit.project.is_some() {
-                        task.project = edit.project.unwrap();
+                    if let Some(project) = edit.project {
+                        task.project = project;
                     }
 
-                    if edit.state.is_some() {
-                        task.state = edit.state.unwrap().into();
+                    if let Some(state) = edit.state {
+                        task.state = state.into();
                     }
 
-                    if edit.tags.is_some() {
-                        task.replace_tags(edit.tags.unwrap());
+                    if let Some(tags) = edit.tags {
+                        task.replace_tags(tags);
                     }
                 }
                 None => match configuration.language {
@@ -216,8 +222,8 @@ pub fn execute_application(cli: Cli) -> color_eyre::Result<()> {
             }
 
             match to_do.save(&configuration.to_do_path) {
-                Ok(_) => match configuration.language {
-                    Language::English => println!("{}", "Task edited".blue()),
+                Ok(()) => match configuration.language {
+                    Language::English => println!("{}", "edited Task".blue()),
                     Language::Spanish => println!("{}", "Tarea editada".blue()),
                 },
                 Err(err) => match configuration.language {
@@ -257,12 +263,12 @@ pub fn execute_application(cli: Cli) -> color_eyre::Result<()> {
                 .for_each(|task| task.change_state(toggle.state.into()));
 
             match to_do.save(&configuration.to_do_path) {
-                Ok(_) => match configuration.language {
+                Ok(()) => match configuration.language {
                     Language::English => {
-                        println!("{}", "State changed".yellow())
+                        println!("{}", "State changed".yellow());
                     }
                     Language::Spanish => {
-                        println!("{}", "Estado cambiado".yellow())
+                        println!("{}", "Estado cambiado".yellow());
                     }
                 },
                 Err(err) => match configuration.language {

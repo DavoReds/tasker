@@ -13,10 +13,19 @@ rust-version = "1.70.0"
 
 [dependencies]
 camino = { workspace = true }
-clap = { version = "4.4.16", features = ["derive"] }
+clap = { version = "4.5.1", features = ["derive"] }
 color-eyre = "0.6.2"
-itertools = "0.12.0"
+itertools = "0.12.1"
 lib-tasker = { path = "../lib-tasker", version = "1.0.7" }
 owo-colors = "4.0.0"
 serde = { workspace = true }
 toml = { workspace = true }
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+enum_glob_use = "deny"
+nursery = "deny"
+pedantic = "deny"
+unwrap_used = "deny"

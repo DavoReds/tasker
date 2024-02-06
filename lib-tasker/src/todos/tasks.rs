@@ -18,6 +18,7 @@ pub struct Task {
     Default,
     PartialEq,
     Eq,
+    Copy,
     Clone,
     PartialOrd,
     Ord,
@@ -57,7 +58,7 @@ impl Task {
         &mut self,
         tags: impl IntoIterator<Item = impl Into<String>>,
     ) {
-        self.tags = tags.into_iter().map(|tag| slug(tag.into())).collect()
+        self.tags = tags.into_iter().map(|tag| slug(tag.into())).collect();
     }
 
     pub fn change_description(&mut self, description: impl Into<String>) {
@@ -101,7 +102,7 @@ impl TaskBuilder {
 
             self.tags = Some(tags);
         } else {
-            self.tags.as_mut().unwrap().insert(slug(tag.into()));
+            self.tags.as_mut().map(|tags| tags.insert(slug(tag.into())));
         }
 
         self
@@ -116,13 +117,17 @@ impl TaskBuilder {
         self
     }
 
+    #[must_use]
     pub fn build(&self) -> Task {
         Task {
             id: self.id,
             description: self.description.clone(),
-            state: self.state.clone(),
+            state: self.state,
             tags: self.tags.clone().unwrap_or_default(),
-            project: self.project.clone().unwrap_or("Inbox".to_string()),
+            project: self
+                .project
+                .clone()
+                .unwrap_or_else(|| "Inbox".to_string()),
         }
     }
 }
