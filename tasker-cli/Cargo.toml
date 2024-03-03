@@ -13,7 +13,7 @@ rust-version = "1.70.0"
 
 [dependencies]
 camino = { workspace = true }
-clap = { version = "4.5.1", features = ["derive"] }
+clap = { version = "4.5.2", features = ["derive"] }
 color-eyre = "0.6.2"
 itertools = "0.12.1"
 lib-tasker = { path = "../lib-tasker", version = "1.0.7" }
