@@ -46,7 +46,11 @@ fn push_task(task: &Task, string: &mut String, config: &Configuration) {
     string.push_str(" }\n\n");
 }
 
-pub fn list_tasks(to_do: ToDo, config: &Configuration, args: Option<ListToDo>) {
+pub fn list_to_dos(
+    to_do: ToDo,
+    config: &Configuration,
+    args: Option<ListToDo>,
+) {
     let mut output = String::new();
 
     if let Some(options) = args {
