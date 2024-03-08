@@ -6,7 +6,7 @@ A command line application to manage your daily tasks.
 
 #### Crates.io
 
-You can install Tasker CLI from the [crates.io](https://crates.io/) repository.
+You can install Tasker CLI from the [crates.io](https://crates.io/) registry.
 
 ```bash
 cargo install tasker-cli
@@ -20,10 +20,10 @@ installation.
 
 You can also download a precompiled binary from the
 [releases](https://gitlab.com/DavoReds/tasker/-/releases) page. Currently only
-Windows and Linux are present.
+Windows and Linux binaries are present.
 
-Select the file corresponding to your operating system and extract it, you can
-then put the binary on your PATH for ease of use.
+Select the one that corresponds to your operating system and extract it, you can
+then move the binary to somewhere on your PATH for ease of use.
 
 #### Build From Source
 
