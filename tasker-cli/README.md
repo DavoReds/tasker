@@ -4,7 +4,7 @@ A command line application to manage your daily tasks.
 
 ## Installation
 
-#### Crates
+#### Crates.io
 
 You can install Tasker CLI from the [crates.io](https://crates.io/) repository.
 
@@ -20,10 +20,24 @@ installation.
 
 You can also download a precompiled binary from the
 [releases](https://gitlab.com/DavoReds/tasker/-/releases) page. Currently only
-Windows, Linux and x86 Mac's are present.
+Windows and Linux are present.
 
-Select the file corresponding to your operating system and decompress it, you
-can then put the binary on your PATH for ease of use.
+Select the file corresponding to your operating system and extract it, you can
+then put the binary on your PATH for ease of use.
+
+#### Build From Source
+
+To build this package from source, you'll the need the
+[Rust Toolchain](https://www.rust-lang.org/learn/get-started) installed.
+
+1. Clone this repository.
+2. Execute `cargo build --release`
+3. The binary will be built in the `target/release` directory at the root of the
+   repository.
+
+I also recommend using a tool like [UPX](https://upx.github.io/) to compress the
+resulting binary and [GNU Stow](https://www.gnu.org/software/stow/) to manage
+symlinks and avoid managing the package manually.
 
 ## Usage
 
