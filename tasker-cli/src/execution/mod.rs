@@ -250,8 +250,8 @@ fn edit_task(
 
     match to_do.save(&config.to_do_path) {
         Ok(()) => match config.language {
-            Language::English => println!("{}", "to_edited Task".blue()),
-            Language::Spanish => println!("{}", "Tarea to_editada".blue()),
+            Language::English => println!("{}", "Edited Task".blue()),
+            Language::Spanish => println!("{}", "Tarea editada".blue()),
         },
         Err(err) => match config.language {
             Language::English => {
