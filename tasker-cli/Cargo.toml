@@ -1,6 +1,6 @@
 [package]
 name = "tasker-cli"
-version = "1.0.8"
+version = "1.0.9"
 authors = ["Dalia Rojas Vallejo <daliarojasvallejo@proton.me>"]
 categories = ["command-line-utilities"]
 edition = "2021"
