@@ -23,11 +23,11 @@ pub struct Cli {
     pub command: Option<Command>,
 
     /// Path to a file in which to look for and save Tasks
-    #[arg(long = "todo-file")]
-    pub to_do_file: Option<Utf8PathBuf>,
+    #[arg(short = 'T', long)]
+    pub todo_file: Option<Utf8PathBuf>,
 
     /// Path to an alternative configuration file. Takes precedence over `todo-file`
-    #[arg(long)]
+    #[arg(short = 'C', long)]
     pub config_file: Option<Utf8PathBuf>,
 }
 
