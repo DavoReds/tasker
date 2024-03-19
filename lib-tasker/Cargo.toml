@@ -17,7 +17,7 @@ directories = "5.0.1"
 ron = "0.8.1"
 serde = { workspace = true }
 str_slug = "0.1.3"
-thiserror = "1.0.57"
+thiserror = "1.0.58"
 toml = { workspace = true }
 
 [lints.rust]

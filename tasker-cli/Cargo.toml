@@ -12,9 +12,9 @@ description = "A To-Do CLI application for managing your daily Tasks."
 rust-version = "1.70.0"
 
 [dependencies]
+anyhow = "1.0.81"
 camino = { workspace = true }
-clap = { version = "4.5.2", features = ["derive"] }
-color-eyre = "0.6.2"
+clap = { version = "4.5.3", features = ["derive"] }
 itertools = "0.12.1"
 lib-tasker = { path = "../lib-tasker", version = "1.0.7" }
 owo-colors = "4.0.0"

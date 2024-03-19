@@ -7,7 +7,7 @@ use crate::{
     },
     config::{Configuration, Language},
 };
-use color_eyre::eyre::eyre;
+use anyhow::bail;
 use helpers::{get_index, list_to_dos};
 use lib_tasker::{
     io::get_project_directories,
@@ -20,11 +20,11 @@ use owo_colors::OwoColorize;
 /// # Errors
 ///
 /// Returns an error if the execution of the application failed at any point.
-pub fn execute_application(cli: Cli) -> color_eyre::Result<()> {
+pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
     let configuration = if let Some(path) = cli.config_file {
         Configuration::from_given_file(&path)?
     } else {
-        let to_do_path = if let Some(path) = cli.to_do_file {
+        let to_do_path = if let Some(path) = cli.todo_file {
             path
         } else {
             ToDo::get_default_to_do_path()?
@@ -54,7 +54,7 @@ pub fn execute_application(cli: Cli) -> color_eyre::Result<()> {
     Ok(())
 }
 
-fn add_task(to_add: AddToDo, config: &Configuration) -> color_eyre::Result<()> {
+fn add_task(to_add: AddToDo, config: &Configuration) -> anyhow::Result<()> {
     let mut to_do = ToDo::get_to_do(&config.to_do_path)?;
     let index = get_index(&to_do);
 
@@ -83,13 +83,10 @@ fn add_task(to_add: AddToDo, config: &Configuration) -> color_eyre::Result<()> {
         },
         Err(err) => match config.language {
             Language::English => {
-                return Err(eyre!("Failed to save Task file: {}", err.red()))
+                bail!("Failed to save Task file: {}", err.red())
             }
             Language::Spanish => {
-                return Err(eyre!(
-                    "No se pudo guardar el archivo de Tareas: {}",
-                    err.red()
-                ))
+                bail!("No se pudo guardar el archivo de Tareas: {}", err.red())
             }
         },
     }
@@ -100,7 +97,7 @@ fn add_task(to_add: AddToDo, config: &Configuration) -> color_eyre::Result<()> {
 fn add_multiple_tasks(
     to_add: AddMultipleToDo,
     config: &Configuration,
-) -> color_eyre::Result<()> {
+) -> anyhow::Result<()> {
     let mut to_do = ToDo::get_to_do(&config.to_do_path)?;
     let mut index = get_index(&to_do);
 
@@ -141,13 +138,10 @@ fn add_multiple_tasks(
         },
         Err(err) => match config.language {
             Language::English => {
-                return Err(eyre!("Failed to save Task file: {}", err.red()))
+                bail!("Failed to save Task file: {}", err.red())
             }
             Language::Spanish => {
-                return Err(eyre!(
-                    "No se pudo guardar archivo de Tareas: {}",
-                    err.red()
-                ))
+                bail!("No se pudo guardar archivo de Tareas: {}", err.red())
             }
         },
     }
@@ -155,7 +149,7 @@ fn add_multiple_tasks(
     Ok(())
 }
 
-fn clean_completed_tasks(config: &Configuration) -> color_eyre::Result<()> {
+fn clean_completed_tasks(config: &Configuration) -> anyhow::Result<()> {
     let mut to_do = ToDo::get_to_do(&config.to_do_path)?;
 
     to_do.tasks.retain(|task| task.state != State::Done);
@@ -171,13 +165,10 @@ fn clean_completed_tasks(config: &Configuration) -> color_eyre::Result<()> {
         },
         Err(err) => match config.language {
             Language::English => {
-                return Err(eyre!("Failed to save Task file: {}", err.red()))
+                bail!("Failed to save Task file: {}", err.red())
             }
             Language::Spanish => {
-                return Err(eyre!(
-                    "No se pudo guardar archivo de Tareas: {}",
-                    err.red()
-                ))
+                bail!("No se pudo guardar archivo de Tareas: {}", err.red())
             }
         },
     }
@@ -188,7 +179,7 @@ fn clean_completed_tasks(config: &Configuration) -> color_eyre::Result<()> {
 fn delete_tasks(
     to_delete: &DeleteToDo,
     config: &Configuration,
-) -> color_eyre::Result<()> {
+) -> anyhow::Result<()> {
     let mut to_do = ToDo::get_to_do(&config.to_do_path)?;
 
     to_do
@@ -204,13 +195,10 @@ fn delete_tasks(
         },
         Err(err) => match config.language {
             Language::English => {
-                return Err(eyre!("Failed to save Task file: {}", err.red()))
+                bail!("Failed to save Task file: {}", err.red())
             }
             Language::Spanish => {
-                return Err(eyre!(
-                    "No se pudo guardar archivo de Tareas: {}",
-                    err.red()
-                ))
+                bail!("No se pudo guardar archivo de Tareas: {}", err.red())
             }
         },
     }
@@ -218,10 +206,7 @@ fn delete_tasks(
     Ok(())
 }
 
-fn edit_task(
-    to_edit: EditToDo,
-    config: &Configuration,
-) -> color_eyre::Result<()> {
+fn edit_task(to_edit: EditToDo, config: &Configuration) -> anyhow::Result<()> {
     let mut to_do = ToDo::get_to_do(&config.to_do_path)?;
 
     match to_do.tasks.iter_mut().find(|task| task.id == to_edit.task) {
@@ -243,8 +228,8 @@ fn edit_task(
             }
         }
         None => match config.language {
-            Language::English => return Err(eyre!("Task doesn't exist".red())),
-            Language::Spanish => return Err(eyre!("Tarea no existe".red())),
+            Language::English => bail!("Task doesn't exist".red()),
+            Language::Spanish => bail!("Tarea no existe".red()),
         },
     }
 
@@ -255,13 +240,10 @@ fn edit_task(
         },
         Err(err) => match config.language {
             Language::English => {
-                return Err(eyre!("Failed to save Task file: {}", err.red()))
+                bail!("Failed to save Task file: {}", err.red())
             }
             Language::Spanish => {
-                return Err(eyre!(
-                    "No se pudo guardar archivo de Tareas: {}",
-                    err.red()
-                ))
+                bail!("No se pudo guardar archivo de Tareas: {}", err.red())
             }
         },
     }
@@ -269,17 +251,14 @@ fn edit_task(
     Ok(())
 }
 
-fn list_tasks(
-    to_list: ListToDo,
-    config: &Configuration,
-) -> color_eyre::Result<()> {
+fn list_tasks(to_list: ListToDo, config: &Configuration) -> anyhow::Result<()> {
     let to_do = ToDo::get_to_do(&config.to_do_path)?;
     list_to_dos(to_do, config, Some(to_list));
 
     Ok(())
 }
 
-fn get_paths() -> color_eyre::Result<()> {
+fn get_paths() -> anyhow::Result<()> {
     let paths = get_project_directories()?;
 
     println!("Config path: {}", paths.config_dir().display());
@@ -291,7 +270,7 @@ fn get_paths() -> color_eyre::Result<()> {
 fn toggle_tasks(
     to_toggle: &ToggleToDo,
     config: &Configuration,
-) -> color_eyre::Result<()> {
+) -> anyhow::Result<()> {
     let mut to_do = ToDo::get_to_do(&config.to_do_path)?;
 
     to_do
@@ -311,13 +290,10 @@ fn toggle_tasks(
         },
         Err(err) => match config.language {
             Language::English => {
-                return Err(eyre!("Failed to save Task file: {}", err.red()))
+                bail!("Failed to save Task file: {}", err.red())
             }
             Language::Spanish => {
-                return Err(eyre!(
-                    "No se pudo guardar archivo de Tareas: {}",
-                    err.red()
-                ))
+                bail!("No se pudo guardar archivo de Tareas: {}", err.red())
             }
         },
     }
