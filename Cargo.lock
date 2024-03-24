@@ -221,7 +221,7 @@ dependencies = [
 
 [[package]]
 name = "lib-tasker"
-version = "1.0.12"
+version = "2.0.0"
 dependencies = [
  "camino",
  "directories",
@@ -374,7 +374,7 @@ dependencies = [
 
 [[package]]
 name = "tasker-cli"
-version = "1.0.12"
+version = "2.0.0"
 dependencies = [
  "anyhow",
  "camino",
