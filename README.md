@@ -15,7 +15,7 @@ are interoperable between them.
 - Cross platform
 - Use of text files instead of an internal database
 - No internet connection required
-- Written in Rust, btw
+- Rust, btw
 
 ## Installation
 
@@ -23,7 +23,7 @@ are interoperable between them.
 
 #### Crates
 
-You can install Tasker CLI from the [crates.io](https://crates.io/) repository.
+You can install Tasker CLI from [crates.io](https://crates.io/).
 
 ```bash
 cargo install tasker-cli
@@ -44,7 +44,7 @@ can then put the binary on your PATH for ease of use.
 
 ## Roadmap
 
-- Develop Tasker GUI
+- [ ] Develop Tasker GUI
 
 ## Contributing
 

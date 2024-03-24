@@ -58,8 +58,8 @@ Commands:
   help    Print this message or the help of the given subcommand(s)
 
 Options:
-      --todo-file <TO_DO_FILE>     Path to a file in which to look for and save Tasks
-      --config-file <CONFIG_FILE>  Path to an alternative configuration file. Takes precedence over `todo-file`
+  -T, --todo-file <TODO_FILE>      Path to a file in which to look for and save Tasks
+  -C, --config-file <CONFIG_FILE>  Path to an alternative configuration file. Takes precedence over `todo-file`
   -h, --help                       Print help
   -V, --version                    Print version
 ```
