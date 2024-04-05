@@ -7,7 +7,7 @@ edition = "2021"
 keywords = ["todo", "app", "cli"]
 license = "GPL-3.0-or-later"
 readme = true
-repository = "https://gitlab.com/DavoReds/tasker"
+repository = "https://github.com/DavoReds/tasker"
 description = "A To-Do CLI application for managing your daily Tasks."
 rust-version = "1.70.0"
 
