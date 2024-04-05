@@ -11,6 +11,12 @@ repository = "https://github.com/DavoReds/tasker"
 description = "A To-Do CLI application for managing your daily Tasks."
 rust-version = "1.70.0"
 
+[package.metadata.wix]
+upgrade-guid = "84834A60-D585-4FFF-BD7C-05CE61FB8A52"
+path-guid = "7FB6F14F-4A12-4546-BB88-8AEDA4773F57"
+license = false
+eula = false
+
 [dependencies]
 anyhow = "1.0.81"
 camino = { workspace = true }
