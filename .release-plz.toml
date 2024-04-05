@@ -13,8 +13,10 @@ semver_check = false
 name = "tasker-cli"
 changelog_include = ["lib-tasker"]
 git_release_enable = false
+git_tag_name = "v{{ version }}"
 publish = true
 
 [[package]]
 name = "lib-tasker"
 git_release_enable = false
+git_tag_enable = false
