@@ -1,3 +1,7 @@
+![GitHub License](https://img.shields.io/github/license/DavoReds/tasker?style=flat-square&color=%2389dceb)
+![Crates.io Version](https://img.shields.io/crates/v/tasker-cli?style=flat-square&logo=rust&color=%23f9e2af)
+![Crates.io MSRV](https://img.shields.io/crates/msrv/tasker-cli?style=flat-square&logo=rust&color=%23f38ba8)
+
 # Tasker CLI
 
 A command line application to manage your daily tasks.
@@ -12,36 +16,31 @@ You can install Tasker CLI from the [crates.io](https://crates.io/) registry.
 cargo install tasker-cli
 ```
 
-I also recommend using a tool like
-[cargo binstall](https://github.com/cargo-bins/cargo-binstall) for a faster
-installation.
+I also recommend using a tool like [cargo binstall](https://github.com/cargo-bins/cargo-binstall) for a faster installation.
+
+```sh
+cargo binstall tasker-cli
+```
 
 #### Binary Install
 
-You can also download a precompiled binary from the
-[releases](https://gitlab.com/DavoReds/tasker/-/releases) page. Currently only
-Windows and Linux binaries are present.
+You can also download a precompiled binary from the [releases](https://github.com/DavoReds/tasker/releases) page.
 
-Select the one that corresponds to your operating system and extract it, you can
-then move the binary to somewhere on your PATH for ease of use.
+Select the one that corresponds to your operating system and extract it, you can then move the binary to somewhere on your PATH for ease of use.
 
 #### Build From Source
 
-To build this package from source, you'll the need the
-[Rust Toolchain](https://www.rust-lang.org/learn/get-started) installed.
+To build this package from source, you'll the need a [Rust Toolchain](https://www.rust-lang.org/learn/get-started) installed.
 
 1. Clone this repository.
 2. Execute `cargo build --release`
-3. The binary will be built in the `target/release` directory at the root of the
-   repository.
+3. The binary will be built in the `target/release` directory at the root of the repository.
 
-I also recommend using a tool like [UPX](https://upx.github.io/) to compress the
-resulting binary and [GNU Stow](https://www.gnu.org/software/stow/) to manage
-symlinks and avoid managing the package manually.
+I also recommend using a tool like [UPX](https://upx.github.io/) to compress the resulting binary and [GNU Stow](https://www.gnu.org/software/stow/) to manage symlinks and avoid managing the package manually.
 
 ## Usage
 
-```bash
+```sh
 $ tasker-cli help
 
 Usage: tasker-cli [OPTIONS] [COMMAND]
