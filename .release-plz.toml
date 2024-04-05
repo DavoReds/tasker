@@ -20,3 +20,4 @@ publish = true
 name = "lib-tasker"
 git_release_enable = false
 git_tag_enable = false
+publish = true
