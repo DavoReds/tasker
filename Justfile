@@ -3,9 +3,9 @@ _default:
 
 # Test code, formatting and best practices
 test *args:
-    cargo nextest run {{ args }}
+    mold -run cargo nextest run {{ args }}
     cargo fmt --check
-    cargo clippy -- -D warnings
+    mold -run cargo clippy -- -D warnings
 
 # Clean cargo artifacts
 @clean:
