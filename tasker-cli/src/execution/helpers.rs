@@ -2,10 +2,10 @@ use crate::{
     cli::{ListTasks, SortTasks},
     config::{Configuration, Language},
 };
+use indexmap::IndexSet;
 use itertools::Itertools;
 use lib_tasker::todos::{State, Task, ToDo};
 use owo_colors::OwoColorize;
-use std::collections::HashSet;
 
 #[must_use]
 pub fn get_next_index(to_do: &ToDo) -> usize {
@@ -69,7 +69,7 @@ pub fn list_to_dos(
         }
 
         if let Some(tags) = options.tag {
-            let tags: HashSet<String> = tags.into_iter().collect();
+            let tags: IndexSet<String> = tags.into_iter().collect();
             tasks.retain(|task| task.tags.intersection(&tags).count() > 0);
         }
 

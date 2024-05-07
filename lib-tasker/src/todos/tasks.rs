@@ -1,5 +1,5 @@
+use indexmap::IndexSet;
 use serde::{Deserialize, Serialize};
-use std::collections::HashSet;
 use str_slug::slug;
 
 #[derive(Debug, Deserialize, Serialize, PartialEq, Eq, Clone)]
@@ -7,7 +7,7 @@ pub struct Task {
     pub id: usize,
     pub description: String,
     pub state: State,
-    pub tags: HashSet<String>,
+    pub tags: IndexSet<String>,
     pub project: String,
 }
 
@@ -75,7 +75,7 @@ pub struct TaskBuilder {
     id: usize,
     description: String,
     state: State,
-    tags: Option<HashSet<String>>,
+    tags: Option<IndexSet<String>>,
     project: Option<String>,
 }
 
@@ -97,7 +97,7 @@ impl TaskBuilder {
 
     pub fn tag(&mut self, tag: impl Into<String>) -> &mut Self {
         if self.tags.is_none() {
-            let mut tags = HashSet::new();
+            let mut tags = IndexSet::new();
             tags.insert(slug(tag.into()));
 
             self.tags = Some(tags);
@@ -146,7 +146,7 @@ mod tests {
                 id: 0,
                 description: "This is a test".to_string(),
                 state: State::ToDo,
-                tags: HashSet::new(),
+                tags: IndexSet::new(),
                 project: "Inbox".to_string()
             }
         );
@@ -162,7 +162,7 @@ mod tests {
                 id: 0,
                 description: "This is a test".to_string(),
                 state: State::Waiting,
-                tags: HashSet::new(),
+                tags: IndexSet::new(),
                 project: "Inbox".to_string()
             }
         );
@@ -171,8 +171,8 @@ mod tests {
     #[test]
     fn task_builder_change_tag_works() {
         let task = Task::create("This is a test").tag("Test").build();
-        let mut hash_set = HashSet::new();
-        hash_set.insert("test".to_string());
+        let mut set = IndexSet::new();
+        set.insert("test".to_string());
 
         assert_eq!(
             task,
@@ -180,7 +180,7 @@ mod tests {
                 id: 0,
                 description: "This is a test".to_string(),
                 state: State::ToDo,
-                tags: hash_set,
+                tags: set,
                 project: "Inbox".to_string()
             }
         );
@@ -192,9 +192,9 @@ mod tests {
             .tags(["Test 1", "Test 2"])
             .build();
 
-        let mut hash_set = HashSet::new();
-        hash_set.insert("test-1".to_string());
-        hash_set.insert("test-2".to_string());
+        let mut set = IndexSet::new();
+        set.insert("test-1".to_string());
+        set.insert("test-2".to_string());
 
         assert_eq!(
             task,
@@ -202,7 +202,7 @@ mod tests {
                 id: 0,
                 description: "This is a test".to_string(),
                 state: State::ToDo,
-                tags: hash_set,
+                tags: set,
                 project: "Inbox".to_string()
             }
         );
@@ -218,7 +218,7 @@ mod tests {
                 id: 0,
                 description: "This is a test".to_string(),
                 state: State::ToDo,
-                tags: HashSet::new(),
+                tags: IndexSet::new(),
                 project: "Testing".to_string()
             }
         );
@@ -236,7 +236,7 @@ mod tests {
                 id: 0,
                 description: "This is a test".to_string(),
                 state: State::ToDo,
-                tags: HashSet::from(["testing-tags".to_string()]),
+                tags: IndexSet::from(["testing-tags".to_string()]),
                 project: "Testing".to_string()
             }
         );
@@ -254,7 +254,7 @@ mod tests {
                 id: 0,
                 description: "This is a test".to_string(),
                 state: State::ToDo,
-                tags: HashSet::from([
+                tags: IndexSet::from([
                     "testing-tags".to_string(),
                     "another-tag".to_string(),
                     "yet-another-tag".to_string()

@@ -16,6 +16,7 @@ lto = "thin"
 
 [workspace.dependencies]
 camino = { version = "1.1.6", features = ["serde1"] }
+indexmap = { version = "2.2.6", features = ["serde"] }
 serde = { version = "1.0.200", features = ["derive"] }
 toml = "0.8.12"
 

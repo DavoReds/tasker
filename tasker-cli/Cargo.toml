@@ -21,6 +21,7 @@ eula = false
 anyhow = "1.0.83"
 camino = { workspace = true }
 clap = { version = "4.5.4", features = ["derive"] }
+indexmap = { workspace = true }
 itertools = "0.12.1"
 lib-tasker = { path = "../lib-tasker", version = "2.0.0" }
 owo-colors = "4.0.0"

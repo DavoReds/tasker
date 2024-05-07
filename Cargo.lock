@@ -203,6 +203,7 @@ checksum = "168fb715dda47215e360912c096649d23d58bf392ac62f73919e831745e40f26"
 dependencies = [
  "equivalent",
  "hashbrown",
+ "serde",
 ]
 
 [[package]]
@@ -226,6 +227,7 @@ version = "2.1.0"
 dependencies = [
  "camino",
  "directories",
+ "indexmap",
  "ron",
  "serde",
  "str_slug",
@@ -304,6 +306,7 @@ checksum = "b91f7eff05f748767f183df4320a63d6936e9c6107d97c9e6bdd9784f4289c94"
 dependencies = [
  "base64",
  "bitflags",
+ "indexmap",
  "serde",
  "serde_derive",
 ]
@@ -370,6 +373,7 @@ dependencies = [
  "anyhow",
  "camino",
  "clap",
+ "indexmap",
  "itertools",
  "lib-tasker",
  "owo-colors",
