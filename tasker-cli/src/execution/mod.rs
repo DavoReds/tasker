@@ -2,8 +2,7 @@ mod helpers;
 
 use crate::{
     cli::{
-        AddTask, AddTasks, Cli, Command, DeleteTasks, EditTask, ListTasks,
-        ToggleTasks,
+        AddTasks, Cli, Command, DeleteTasks, EditTask, ListTasks, ToggleTasks,
     },
     config::{Configuration, Language},
 };
@@ -34,10 +33,7 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
     };
 
     match cli.command {
-        Some(Command::Add(add)) => add_task(add, &configuration)?,
-        Some(Command::AddMultiple(add)) => {
-            add_tasks(add, &configuration)?;
-        }
+        Some(Command::Add(add)) => add_tasks(add, &configuration)?,
         Some(Command::Clean) => clean_completed_tasks(&configuration)?,
         Some(Command::Delete(delete)) => delete_tasks(&delete, &configuration)?,
         Some(Command::Edit(edit)) => edit_task(edit, &configuration)?,
@@ -49,46 +45,6 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
 
             list_to_dos(to_do, &configuration, None);
         }
-    }
-
-    Ok(())
-}
-
-fn add_task(to_add: AddTask, config: &Configuration) -> anyhow::Result<()> {
-    let mut to_do = ToDo::get_to_do(&config.to_do_path)?;
-    let index = get_next_index(&to_do);
-
-    match to_add.project {
-        Some(project) => to_do.add_task(
-            Task::create(to_add.description)
-                .id(index)
-                .project(project)
-                .tags(to_add.tag.unwrap_or_default())
-                .build(),
-        ),
-        None => to_do.add_task(
-            Task::create(to_add.description)
-                .id(index)
-                .tags(to_add.tag.unwrap_or_default())
-                .build(),
-        ),
-    }
-
-    match to_do.save(&config.to_do_path) {
-        Ok(()) => match config.language {
-            Language::English => println!("{}", "Added Task".green()),
-            Language::Spanish => {
-                println!("{}", "Tarea añadida".green());
-            }
-        },
-        Err(err) => match config.language {
-            Language::English => {
-                bail!("Failed to save Task file: {}", err.red())
-            }
-            Language::Spanish => {
-                bail!("No se pudo guardar el archivo de Tareas: {}", err.red())
-            }
-        },
     }
 
     Ok(())

@@ -41,17 +41,9 @@ pub struct Cli {
 {all-args}"
 ))]
 pub enum Command {
-    /// Add one Task
+    /// Add Task(s)
     #[command(arg_required_else_help = true, visible_alias = "a")]
-    Add(AddTask),
-
-    /// Add multiple Tasks
-    #[command(
-        arg_required_else_help = true,
-        name = "addm",
-        visible_alias = "am"
-    )]
-    AddMultiple(AddTasks),
+    Add(AddTasks),
 
     /// Clean completed Tasks
     #[command(visible_alias = "c")]
@@ -76,28 +68,6 @@ pub enum Command {
     /// Change the state of a Task
     #[command(arg_required_else_help = true, visible_alias = "t")]
     Toggle(ToggleTasks),
-}
-
-#[derive(Args, Debug)]
-#[command(help_template(
-    "\
-{name}
-{about-with-newline}
-{usage-heading} {usage}
-
-{all-args}"
-))]
-pub struct AddTask {
-    /// Task to accomplish
-    pub description: String,
-
-    /// Project the Task belongs to. Defaults to "Inbox"
-    #[arg(short, long)]
-    pub project: Option<String>,
-
-    /// Tag to classify the Task. Can be called multiple times
-    #[arg(short, long)]
-    pub tag: Option<Vec<String>>,
 }
 
 #[derive(Args, Debug)]
