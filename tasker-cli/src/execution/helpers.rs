@@ -1,5 +1,5 @@
 use crate::{
-    cli::{ListToDo, SortToDo},
+    cli::{ListTasks, SortTasks},
     config::{Configuration, Language},
 };
 use itertools::Itertools;
@@ -8,7 +8,7 @@ use owo_colors::OwoColorize;
 use std::collections::HashSet;
 
 #[must_use]
-pub fn get_index(to_do: &ToDo) -> usize {
+pub fn get_next_index(to_do: &ToDo) -> usize {
     to_do.tasks.last().map_or(0, |last| last.id + 1)
 }
 
@@ -49,7 +49,7 @@ fn push_task(task: &Task, string: &mut String, config: &Configuration) {
 pub fn list_to_dos(
     to_do: ToDo,
     config: &Configuration,
-    args: Option<ListToDo>,
+    args: Option<ListTasks>,
 ) {
     let mut output = String::new();
 
@@ -83,16 +83,16 @@ pub fn list_to_dos(
 
         if let Some(sort_options) = options.sort_by {
             match sort_options {
-                SortToDo::Description => tasks.sort_unstable_by(|a, b| {
+                SortTasks::Description => tasks.sort_unstable_by(|a, b| {
                     a.description
                         .to_lowercase()
                         .cmp(&b.description.to_lowercase())
                 }),
-                SortToDo::Project => tasks.sort_unstable_by(|a, b| {
+                SortTasks::Project => tasks.sort_unstable_by(|a, b| {
                     a.project.to_lowercase().cmp(&b.project.to_lowercase())
                 }),
-                SortToDo::ID => tasks.sort_unstable_by(|a, b| a.id.cmp(&b.id)),
-                SortToDo::State => {
+                SortTasks::ID => tasks.sort_unstable_by(|a, b| a.id.cmp(&b.id)),
+                SortTasks::State => {
                     tasks.sort_unstable_by(|a, b| a.state.cmp(&b.state));
                 }
             }

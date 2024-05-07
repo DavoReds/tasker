@@ -2,13 +2,13 @@ mod helpers;
 
 use crate::{
     cli::{
-        AddMultipleToDo, AddToDo, Cli, Command, DeleteToDo, EditToDo, ListToDo,
-        ToggleToDo,
+        AddTask, AddTasks, Cli, Command, DeleteTasks, EditTask, ListTasks,
+        ToggleTasks,
     },
     config::{Configuration, Language},
 };
 use anyhow::bail;
-use helpers::{get_index, list_to_dos};
+use helpers::{get_next_index, list_to_dos};
 use lib_tasker::{
     io::get_project_directories,
     todos::{State, Task, ToDo},
@@ -36,7 +36,7 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
     match cli.command {
         Some(Command::Add(add)) => add_task(add, &configuration)?,
         Some(Command::AddMultiple(add)) => {
-            add_multiple_tasks(add, &configuration)?;
+            add_tasks(add, &configuration)?;
         }
         Some(Command::Clean) => clean_completed_tasks(&configuration)?,
         Some(Command::Delete(delete)) => delete_tasks(&delete, &configuration)?,
@@ -54,9 +54,9 @@ pub fn execute_application(cli: Cli) -> anyhow::Result<()> {
     Ok(())
 }
 
-fn add_task(to_add: AddToDo, config: &Configuration) -> anyhow::Result<()> {
+fn add_task(to_add: AddTask, config: &Configuration) -> anyhow::Result<()> {
     let mut to_do = ToDo::get_to_do(&config.to_do_path)?;
-    let index = get_index(&to_do);
+    let index = get_next_index(&to_do);
 
     match to_add.project {
         Some(project) => to_do.add_task(
@@ -94,22 +94,20 @@ fn add_task(to_add: AddToDo, config: &Configuration) -> anyhow::Result<()> {
     Ok(())
 }
 
-fn add_multiple_tasks(
-    to_add: AddMultipleToDo,
-    config: &Configuration,
-) -> anyhow::Result<()> {
+fn add_tasks(to_add: AddTasks, config: &Configuration) -> anyhow::Result<()> {
     let mut to_do = ToDo::get_to_do(&config.to_do_path)?;
-    let mut index = get_index(&to_do);
+    let mut next_index = get_next_index(&to_do);
 
     match to_add.project {
         Some(project) => {
             to_do
                 .tasks
                 .extend(to_add.descriptions.into_iter().map(|desc| {
-                    let last_index = index;
-                    index += 1;
+                    let index = next_index;
+                    next_index += 1;
+
                     Task::create(desc)
-                        .id(last_index)
+                        .id(index)
                         .project(project.clone())
                         .tags(to_add.tag.clone().unwrap_or_default())
                         .build()
@@ -119,10 +117,11 @@ fn add_multiple_tasks(
             to_do
                 .tasks
                 .extend(to_add.descriptions.into_iter().map(|desc| {
-                    let last_index = index;
-                    index += 1;
+                    let index = next_index;
+                    next_index += 1;
+
                     Task::create(desc)
-                        .id(last_index)
+                        .id(index)
                         .tags(to_add.tag.clone().unwrap_or_default())
                         .build()
                 }));
@@ -177,7 +176,7 @@ fn clean_completed_tasks(config: &Configuration) -> anyhow::Result<()> {
 }
 
 fn delete_tasks(
-    to_delete: &DeleteToDo,
+    to_delete: &DeleteTasks,
     config: &Configuration,
 ) -> anyhow::Result<()> {
     let mut to_do = ToDo::get_to_do(&config.to_do_path)?;
@@ -206,7 +205,7 @@ fn delete_tasks(
     Ok(())
 }
 
-fn edit_task(to_edit: EditToDo, config: &Configuration) -> anyhow::Result<()> {
+fn edit_task(to_edit: EditTask, config: &Configuration) -> anyhow::Result<()> {
     let mut to_do = ToDo::get_to_do(&config.to_do_path)?;
 
     match to_do.tasks.iter_mut().find(|task| task.id == to_edit.task) {
@@ -251,7 +250,10 @@ fn edit_task(to_edit: EditToDo, config: &Configuration) -> anyhow::Result<()> {
     Ok(())
 }
 
-fn list_tasks(to_list: ListToDo, config: &Configuration) -> anyhow::Result<()> {
+fn list_tasks(
+    to_list: ListTasks,
+    config: &Configuration,
+) -> anyhow::Result<()> {
     let to_do = ToDo::get_to_do(&config.to_do_path)?;
     list_to_dos(to_do, config, Some(to_list));
 
@@ -268,7 +270,7 @@ fn get_paths() -> anyhow::Result<()> {
 }
 
 fn toggle_tasks(
-    to_toggle: &ToggleToDo,
+    to_toggle: &ToggleTasks,
     config: &Configuration,
 ) -> anyhow::Result<()> {
     let mut to_do = ToDo::get_to_do(&config.to_do_path)?;

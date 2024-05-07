@@ -43,7 +43,7 @@ pub struct Cli {
 pub enum Command {
     /// Add one Task
     #[command(arg_required_else_help = true, visible_alias = "a")]
-    Add(AddToDo),
+    Add(AddTask),
 
     /// Add multiple Tasks
     #[command(
@@ -51,7 +51,7 @@ pub enum Command {
         name = "addm",
         visible_alias = "am"
     )]
-    AddMultiple(AddMultipleToDo),
+    AddMultiple(AddTasks),
 
     /// Clean completed Tasks
     #[command(visible_alias = "c")]
@@ -59,15 +59,15 @@ pub enum Command {
 
     /// Delete Tasks
     #[command(arg_required_else_help = true, visible_alias = "d")]
-    Delete(DeleteToDo),
+    Delete(DeleteTasks),
 
     /// Edit a Task
     #[command(arg_required_else_help = true, visible_alias = "e")]
-    Edit(EditToDo),
+    Edit(EditTask),
 
     /// List Tasks
     #[command(visible_alias = "l")]
-    List(ListToDo),
+    List(ListTasks),
 
     /// Print default paths for the application
     #[command(visible_alias = "p")]
@@ -75,7 +75,7 @@ pub enum Command {
 
     /// Change the state of a Task
     #[command(arg_required_else_help = true, visible_alias = "t")]
-    Toggle(ToggleToDo),
+    Toggle(ToggleTasks),
 }
 
 #[derive(Args, Debug)]
@@ -87,7 +87,7 @@ pub enum Command {
 
 {all-args}"
 ))]
-pub struct AddToDo {
+pub struct AddTask {
     /// Task to accomplish, wrap in quotes for multi-word tasks.
     pub description: String,
 
@@ -109,7 +109,7 @@ pub struct AddToDo {
 
 {all-args}"
 ))]
-pub struct AddMultipleToDo {
+pub struct AddTasks {
     /// Tasks to accomplish, wrap individual Tasks in quotes for multi-word
     /// Tasks.
     pub descriptions: Vec<String>,
@@ -132,7 +132,7 @@ pub struct AddMultipleToDo {
 
 {all-args}"
 ))]
-pub struct ToggleToDo {
+pub struct ToggleTasks {
     /// State to assign the Task
     #[arg(value_enum)]
     pub state: ToggleState,
@@ -181,7 +181,7 @@ impl From<ToggleState> for State {
 
 {all-args}"
 ))]
-pub struct EditToDo {
+pub struct EditTask {
     /// ID of the Task to edit
     #[arg(name = "TO-DO")]
     pub task: usize,
@@ -212,7 +212,7 @@ pub struct EditToDo {
 
 {all-args}"
 ))]
-pub struct DeleteToDo {
+pub struct DeleteTasks {
     /// Id's of Task(s) to delete
     #[arg(name = "TASKS")]
     pub tasks: Vec<usize>,
@@ -227,10 +227,10 @@ pub struct DeleteToDo {
 
 {all-args}"
 ))]
-pub struct ListToDo {
+pub struct ListTasks {
     /// Sort Tasks by this field
     #[arg(short = 'S', long, value_enum)]
-    pub sort_by: Option<SortToDo>,
+    pub sort_by: Option<SortTasks>,
 
     /// Only show Tasks containing this text within their descriptions
     #[arg(short, long)]
@@ -250,7 +250,7 @@ pub struct ListToDo {
 }
 
 #[derive(Debug, ValueEnum, Clone, Copy)]
-pub enum SortToDo {
+pub enum SortTasks {
     /// Sort by description [aliases: desc, d]
     #[value(alias = "desc", alias = "d")]
     Description,
