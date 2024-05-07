@@ -1,6 +1,6 @@
 [package]
 name = "lib-tasker"
-version = "2.1.0"
+version = "2.2.0"
 authors = ["Dalia Rojas Vallejo <daliarojasvallejo@proton.me>"]
 categories = ["command-line-utilities"]
 edition = "2021"
