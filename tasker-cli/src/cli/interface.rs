@@ -88,7 +88,7 @@ pub enum Command {
 {all-args}"
 ))]
 pub struct AddTask {
-    /// Task to accomplish, wrap in quotes for multi-word tasks.
+    /// Task to accomplish
     pub description: String,
 
     /// Project the Task belongs to. Defaults to "Inbox"
@@ -110,15 +110,14 @@ pub struct AddTask {
 {all-args}"
 ))]
 pub struct AddTasks {
-    /// Tasks to accomplish, wrap individual Tasks in quotes for multi-word
-    /// Tasks.
+    /// Task(s) to accomplish
     pub descriptions: Vec<String>,
 
-    /// Project the Task's belongs to. Defaults to "Inbox"
+    /// Project the Task(s) belongs to. Defaults to "Inbox"
     #[arg(short, long)]
     pub project: Option<String>,
 
-    /// Tag to assign the Task's. Can be called multiple times
+    /// Tag to assign the Task(s). Can be called multiple times
     #[arg(short, long)]
     pub tag: Option<Vec<String>>,
 }
@@ -133,7 +132,7 @@ pub struct AddTasks {
 {all-args}"
 ))]
 pub struct ToggleTasks {
-    /// State to assign the Task
+    /// State to assign the Task(s)
     #[arg(value_enum)]
     pub state: ToggleState,
 
@@ -186,19 +185,19 @@ pub struct EditTask {
     #[arg(name = "TO-DO")]
     pub task: usize,
 
-    /// Change Task description
+    /// New description
     #[arg(short, long)]
     pub description: Option<String>,
 
-    /// Change Task progress
+    /// New state
     #[arg(short, long, value_enum)]
     pub state: Option<ToggleState>,
 
-    /// Change Task project
+    /// New project
     #[arg(short, long)]
     pub project: Option<String>,
 
-    /// Replace Task tags. Can be called multiple times
+    /// New tags
     #[arg(short, long)]
     pub tags: Option<Vec<String>>,
 }
@@ -213,7 +212,7 @@ pub struct EditTask {
 {all-args}"
 ))]
 pub struct DeleteTasks {
-    /// Id's of Task(s) to delete
+    /// Ids of the Task(s) to delete
     #[arg(name = "TASKS")]
     pub tasks: Vec<usize>,
 }
@@ -236,11 +235,11 @@ pub struct ListTasks {
     #[arg(short, long)]
     pub description: Option<String>,
 
-    /// Only show Tasks within this state of progress
+    /// Only show Tasks with this state of progress
     #[arg(short, long)]
     pub state: Option<ToggleState>,
 
-    /// Only show Tasks containing this tag. Can be called multiple times
+    /// Only show Tasks containing these tags. Can be called multiple times
     #[arg(short, long)]
     pub tag: Option<Vec<String>>,
 
