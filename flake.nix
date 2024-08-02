@@ -31,6 +31,7 @@
             cargo-nextest
             just
             mold
+            release-plz
             sccache
             taplo
             valgrind
