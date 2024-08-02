@@ -1,4 +1,6 @@
 {
+  description = "Development shell for Tasker";
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
@@ -20,7 +22,6 @@
       pkgs = import nixpkgs {
         inherit system overlays;
       };
-      rustToolchain = pkgs.pkgsBuildHost.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
     in
       with pkgs; {
         devShells.default = mkShell {
@@ -30,9 +31,20 @@
             cargo-nextest
             just
             mold
-            rustToolchain
             sccache
             valgrind
+
+            (rust-bin.stable.latest.default.override {
+              extensions = [
+                "cargo"
+                "clippy"
+                "rust-analyzer"
+                "rustc"
+                "rustfmt"
+                "rust-src"
+                "rust-std"
+              ];
+            })
           ];
 
           shellHook = ''
