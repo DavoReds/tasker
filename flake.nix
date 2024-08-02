@@ -32,6 +32,7 @@
             just
             mold
             sccache
+            taplo
             valgrind
 
             (rust-bin.stable.latest.default.override {
